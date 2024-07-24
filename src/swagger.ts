@@ -1,3 +1,4 @@
+import path from "path";
 import { getRouteFilePaths } from "./utils/filled";
 
 const swaggerAutogen = require("swagger-autogen")({ openapi: "3.0.0" });
@@ -6,55 +7,21 @@ const URL = process.env.URL ?? "localhost";
 
 const doc = {
   info: {
-    version: "0.0.1",
-    title: "API Documentation",
-    description: "API Documentation for the Express API.",
+    version: "1.0.0",
+    title: "My API",
+    description: "Some description...",
   },
   servers: [
     {
-      url: `http://${URL}:${PORT}`,
+      url: "http://localhost:3000/doc",
     },
   ],
-  schemes: ["http"],
-  consumes: ["application/json"],
-  produces: ["application/json"],
-  tags: [
-    {
-      name: "User",
-      description: "User routes",
-      path: "/user",
-    },
-    {
-      name: "Products",
-      description: "Products routes",
-      path: "/products",
-    },
-  ],
-
-  definitions: {
-    User: {
-      type: "object",
-      properties: {
-        id: { type: "number" },
-        name: { type: "string" },
-        email: { type: "string" },
-      },
-    },
-    Product: {
-      type: "object",
-      properties: {
-        id: { type: "number" },
-        name: { type: "string" },
-        price: { type: "number" },
-      },
-    },
-  },
 };
 
-const outputFile = "./assets/swagger-output.json";
+const outputFile = path.join(__dirname, "assets", "swagger-output.json");
+
+console.log(outputFile);
 
 const routesFiles = getRouteFilePaths();
-
-console.log(routesFiles);
 
 swaggerAutogen(outputFile, routesFiles, doc);

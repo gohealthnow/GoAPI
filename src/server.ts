@@ -1,5 +1,5 @@
 import swaggerUi from "swagger-ui-express";
-import swaggerFile from "./assets/swaaget-output.json";
+import swaggerFile from "./assets/swagger-output.json";
 
 import cors from "cors";
 import express from "express";
