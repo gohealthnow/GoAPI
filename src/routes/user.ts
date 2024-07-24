@@ -1,9 +1,10 @@
-import { Router } from "express";
+import express from "express";
+import testController from "../controllers/test.controller";
 
-const userRouter = Router();
+const userRouter = express.Router();
 
 userRouter.get("/", (req, res) => {
-  res.json({ message: "Hello World" });
+  testController.get(req, res);
 });
 
 export default userRouter;
