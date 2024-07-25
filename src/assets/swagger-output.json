@@ -20,6 +20,16 @@
           }
         }
       }
+    },
+    "/authenticate": {
+      "post": {
+        "description": "",
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        }
+      }
     }
   }
 }
