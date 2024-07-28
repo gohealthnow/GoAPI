@@ -111,7 +111,7 @@ userRouter.put("/role", (req, res) => {
         description: 'Erro no servidor.'
       }
   */
-  userController.swirchRole(req, res);
+  userController.switchRole(req, res);
 });
 
 export default userRouter;
