@@ -170,7 +170,7 @@ const userController = {
       }
     });
   },
-  swirchRole: async (req: Request, res: Response) => {
+  switchRole: async (req: Request, res: Response) => {
     const { id, role } = req.query;
 
     const password = req.headers.authorization?.split(" ")[1];
@@ -200,6 +200,8 @@ const userController = {
           return res.status(500).json({ message: error.message });
         });
     }
+
+    return res.status(401).json({ message: "Invalid username or password" });
   },
 };
 
