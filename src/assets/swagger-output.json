@@ -7,7 +7,19 @@
   },
   "servers": [
     {
-      "url": "http://localhost:3000/doc"
+      "url": "http://localhost:3000"
+    }
+  ],
+  "tags": [
+    {
+      "name": "User",
+      "description": "User routes",
+      "path": "/user"
+    },
+    {
+      "name": "Products",
+      "description": "Products routes",
+      "path": "/products"
     }
   ],
   "paths": {
@@ -18,6 +30,323 @@
           "default": {
             "description": ""
           }
+        }
+      }
+    },
+    "/user/login": {
+      "post": {
+        "tags": [
+          "User"
+        ],
+        "description": "Endpoint\r  para realizar login.",
+        "parameters": [
+          {
+            "name": "User",
+            "in": "body",
+            "description": "User information.",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "email": {
+                  "type": "string",
+                  "example": "calculte@univer.com"
+                },
+                "password": {
+                  "type": "string",
+                  "example": "123456"
+                }
+              },
+              "required": [
+                "email",
+                "password"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Login realizado com sucesso.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/User"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/User"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Credenciais inválidas."
+          },
+          "500": {
+            "description": "Erro no servidor."
+          }
+        }
+      }
+    },
+    "/user/register": {
+      "post": {
+        "tags": [
+          "User"
+        ],
+        "description": "Endpoint para realizar registro.",
+        "parameters": [
+          {
+            "name": "User",
+            "in": "body",
+            "description": "User information.",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "email": {
+                  "type": "string",
+                  "example": "user@gohealth.com"
+                },
+                "password": {
+                  "type": "string",
+                  "example": "123456"
+                },
+                "name": {
+                  "type": "string",
+                  "example": "User"
+                }
+              },
+              "required": [
+                "email",
+                "password",
+                "name"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Registro realizado com sucesso.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/User"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/User"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Erro no servidor."
+          }
+        }
+      }
+    },
+    "/user/logout": {
+      "get": {
+        "tags": [
+          "User"
+        ],
+        "description": "Endpoint para realizar logout.",
+        "responses": {
+          "200": {
+            "description": "Logout realizado com sucesso."
+          }
+        }
+      }
+    },
+    "/user/profile": {
+      "get": {
+        "tags": [
+          "User"
+        ],
+        "description": "Endpoint para obter informações do usuário.",
+        "responses": {
+          "200": {
+            "description": "Informações do usuário obtidas com sucesso.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/User"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/User"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/user/role": {
+      "put": {
+        "tags": [
+          "User"
+        ],
+        "description": "Endpoint para atualizar o papel do usuário.",
+        "parameters": [
+          {
+            "name": "User",
+            "in": "params",
+            "description": "User information.",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "number",
+                  "example": 1
+                },
+                "role": {
+                  "type": "string",
+                  "example": "admin"
+                }
+              },
+              "required": [
+                "id",
+                "role"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Papel do usuário atualizado com sucesso."
+          },
+          "500": {
+            "description": "Erro no servidor."
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ]
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "User": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "example": "object"
+          },
+          "properties": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "example": "number"
+                  }
+                }
+              },
+              "name": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "example": "string"
+                  }
+                }
+              },
+              "email": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "example": "string"
+                  }
+                }
+              },
+              "bio": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "example": "string"
+                  }
+                }
+              },
+              "role": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "example": "string"
+                  }
+                }
+              },
+              "avatar": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "example": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "xml": {
+          "name": "User"
+        }
+      },
+      "Product": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "example": "object"
+          },
+          "properties": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "example": "number"
+                  }
+                }
+              },
+              "name": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "example": "string"
+                  }
+                }
+              },
+              "price": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "example": "number"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "xml": {
+          "name": "Product"
         }
       }
     }
