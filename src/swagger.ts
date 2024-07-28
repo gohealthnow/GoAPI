@@ -13,9 +13,46 @@ const doc = {
   },
   servers: [
     {
-      url: "http://localhost:3000/doc",
+      url: `http://${URL}:${PORT}`,
     },
   ],
+  schemes: ["http"],
+  consumes: ["application/json"],
+  produces: ["application/json"],
+  tags: [
+    {
+      name: "User",
+      description: "User routes",
+      path: "/user",
+    },
+    {
+      name: "Products",
+      description: "Products routes",
+      path: "/products",
+    },
+  ],
+
+  definitions: {
+    User: {
+      type: "object",
+      properties: {
+        id: { type: "number" },
+        name: { type: "string" },
+        email: { type: "string" },
+        bio: { type: "string" },
+        role: { type: "string" },
+        avatar: { type: "string" },
+      },
+    },
+    Product: {
+      type: "object",
+      properties: {
+        id: { type: "number" },
+        name: { type: "string" },
+        price: { type: "number" },
+      },
+    },
+  },
 };
 
 const outputFile = path.join(__dirname, "assets", "swagger-output.json");
