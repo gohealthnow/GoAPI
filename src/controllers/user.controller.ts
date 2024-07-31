@@ -3,20 +3,29 @@ import { PrismaClient, Role } from "@prisma/client";
 import jwt, { JwtPayload } from "jsonwebtoken";
 import { ADMIN_SECRET, JWT_SECRET } from "../server";
 import pino from "pino";
+import { regExpEmail } from "../middlewares/checkin";
 
 const logger = pino();
 const prisma = new PrismaClient();
 
 const userController = {
   authenticate: async (req: Request, res: Response) => {
-    const { email, password } = req.body;
+    const { email, password } = req.body as { email: string; password: string };
 
-    console.log(JWT_SECRET);
+    if (!email) {
+      return res.status(400).json({ message: "Missing email field" });
+    }
+
+    if (!password) {
+      return res.status(400).json({ message: "Missing password field" });
+    }
+
+    const emailconverted = email.toLowerCase();
 
     await prisma.user
       .findUnique({
         where: {
-          email: email,
+          email: emailconverted,
           password: password,
         },
       })
@@ -39,12 +48,34 @@ const userController = {
       });
   },
   create: async (req: Request, res: Response) => {
-    const { name, email, password } = req.body;
+    const { name, email, password } = req.body as {
+      name: string;
+      email: string;
+      password: string;
+    };
+
+    if (!name) {
+      return res.status(400).json({ message: "Missing name field" });
+    }
+
+    if (!email) {
+      return res.status(400).json({ message: "Missing email field" });
+    }
+
+    if (!password) {
+      return res.status(400).json({ message: "Missing password field" });
+    }
+
+    const convertedEmail = email.toLowerCase();
+
+    if (!regExpEmail(convertedEmail)) {
+      return res.status(400).json({ message: "Invalid email" });
+    }
 
     const userExists = await prisma.user
       .findUnique({
         where: {
-          email: email,
+          email: convertedEmail,
         },
       })
       .catch((error) => {
@@ -61,7 +92,7 @@ const userController = {
     await prisma.user
       .create({
         data: {
-          email: email,
+          email: convertedEmail,
           password: password,
           name: name,
         },
@@ -70,7 +101,10 @@ const userController = {
         const token = jwt.sign({ id: user.id }, JWT_SECRET, {
           expiresIn: "1h",
         });
-        return res.status(201).json({ token });
+        const { password, ...userWithoutPassword } = user;
+        return res
+          .status(201)
+          .json({ token: token, user: userWithoutPassword });
       })
       .catch((error) => {
         logger.error(error);

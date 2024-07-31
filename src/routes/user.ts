@@ -3,6 +3,23 @@ import userController from "../controllers/user.controller";
 const userRouter = express.Router();
 
 userRouter.get("/", (req, res) => {
+  /* #swagger.tags = ['User']
+      #swagger.path = '/user/'
+      #swagger.description = 'Endpoint
+      para listar todos os usuários.'
+      #swagger.responses[200] = {
+        description: 'Usuários listados com sucesso.',
+        schema: {
+          $ref: '#/definitions/User'
+        }
+      }
+      #swagger.responses[400] = {
+        description: 'Erro ao listar usuários.'
+      }
+      #swagger.responses[500] = {
+        description: 'Erro no servidor.'
+      }
+  */
   userController.listAll(req, res);
 });
 
@@ -112,6 +129,20 @@ userRouter.put("/role", (req, res) => {
       }
   */
   userController.switchRole(req, res);
+});
+
+userRouter.delete("/:id", (req, res) => {
+  /* #swagger.tags = ['User']
+      #swagger.path = '/user/{id}'
+      #swagger.description = 'Endpoint para deletar um usuário.'
+      #swagger.responses[200] = {
+        description: 'Usuário deletado com sucesso.'
+      }
+      #swagger.responses[500] = {
+        description: 'Erro no servidor.'
+      }
+  */
+  userController.delete(req, res);
 });
 
 export default userRouter;

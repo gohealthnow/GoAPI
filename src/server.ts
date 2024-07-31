@@ -4,14 +4,16 @@ import PinoHttp from "pino-http";
 
 import cors from "cors";
 import express from "express";
+import bodyParser from "body-parser";
 
 const server = express();
 const PORT = process.env.PORT ?? 3000;
 const logger = PinoHttp({
   transport: {
-    target: "pino-http-print",
+    level: "debug",
+    target: "pino-pretty",
     options: {
-      destination: 1,
+      destination: 2,
       all: true,
       translateTime: true,
     },
@@ -25,11 +27,12 @@ server.use(cors());
 server.use(["/doc", "/docs"], swaggerUi.serve, swaggerUi.setup(swaggerFile));
 server.use(logger);
 
-server.use(express.json());
+server.use(bodyParser.json());
 server.use(express.urlencoded({ extended: false }));
-server.use(express.static("public"));
 
+server.use(express.static("public"));
 server.use(express.static("views"));
+
 server.set("view engine", "ejs");
 server.set("views", "./views");
 

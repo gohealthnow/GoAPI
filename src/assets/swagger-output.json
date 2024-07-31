@@ -23,12 +23,49 @@
     }
   ],
   "paths": {
-    "/": {
+    "/server": {
       "get": {
-        "description": "",
+        "tags": [
+          "Server"
+        ],
+        "description": "Endpoint para testar a conexão com o servidor.",
         "responses": {
-          "default": {
-            "description": ""
+          "200": {
+            "description": "Servidor conectado."
+          },
+          "500": {
+            "description": "Erro no servidor."
+          }
+        }
+      }
+    },
+    "/user/": {
+      "get": {
+        "tags": [
+          "User"
+        ],
+        "description": "Endpoint\r  para listar todos os usuários.",
+        "responses": {
+          "200": {
+            "description": "Usuários listados com sucesso.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/User"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/User"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Erro ao listar usuários."
+          },
+          "500": {
+            "description": "Erro no servidor."
           }
         }
       }
@@ -229,6 +266,32 @@
             "BearerAuth": []
           }
         ]
+      }
+    },
+    "/user/{id}": {
+      "delete": {
+        "tags": [
+          "User"
+        ],
+        "description": "Endpoint para deletar um usuário.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Usuário deletado com sucesso."
+          },
+          "500": {
+            "description": "Erro no servidor."
+          }
+        }
       }
     }
   },
