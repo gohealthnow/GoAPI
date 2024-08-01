@@ -23,6 +23,34 @@ userRouter.get("/", (req, res) => {
   userController.listAll(req, res);
 });
 
+userRouter.get("/:id", (req, res) => {
+  /* #swagger.tags = ['User']
+      #swagger.path = '/user/{id}'
+      #swagger.description = 'Endpoint para obter um usuário.'
+      #swagger.parameters['User'] = {
+        in: 'params',
+        description: 'User information.',
+        required: true,
+        schema: {
+            $id: 1,
+          },
+        }
+      #swagger.responses[200] = {
+        description: 'Usuário obtido com sucesso.',
+        schema: {
+          $ref: '#/definitions/User'
+        }
+      }
+      #swagger.responses[404] = {
+        description: 'Usuário não encontrado.'
+      }
+      #swagger.responses[500] = {
+        description: 'Erro no servidor.'
+      }
+  */
+  userController.getUserById(req, res);
+});
+
 userRouter.post("/login", (req, res) => {
   /* #swagger.tags = ['User']
       #swagger.path = '/user/login'
