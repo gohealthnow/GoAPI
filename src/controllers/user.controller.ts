@@ -40,7 +40,8 @@ const userController = {
               expiresIn: "1h",
             }
           );
-          return res.status(200).json({ token });
+          const { password, ...userWithoutPassword } = user;
+          return res.status(200).json({ token,  user: userWithoutPassword});
         }
       })
       .catch((error) => {
