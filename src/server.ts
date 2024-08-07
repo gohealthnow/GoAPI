@@ -7,7 +7,8 @@ import express from "express";
 import bodyParser from "body-parser";
 
 const server = express();
-const PORT = process.env.PORT ?? 3000;
+const HOST = process.env.HOST ?? "localhost";
+const PORT = process.env.PORT as unknown as number ?? 3000;
 const logger = PinoHttp({
   transport: {
     level: "debug",
@@ -37,8 +38,8 @@ server.set("view engine", "ejs");
 server.set("views", "./views");
 
 server.listen(PORT, () => {
-  console.log(
-    `\nServer is running!\n\nAPI documentation: http://localhost:${PORT}/doc`
+  logger.logger.info(
+    `\nServer is running!\n\nAPI documentation: http://${HOST}:${PORT}/doc`
   );
 });
 
