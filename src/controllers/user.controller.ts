@@ -1,11 +1,9 @@
 import { Request, Response } from "express";
 import { PrismaClient, Role } from "@prisma/client";
 import jwt, { JwtPayload } from "jsonwebtoken";
-import { ADMIN_SECRET, JWT_SECRET } from "../server";
-import pino from "pino";
+import { ADMIN_SECRET, JWT_SECRET ,logger } from "../server";
 import { regExpEmail } from "../middlewares/checkin";
 
-const logger = pino();
 const prisma = new PrismaClient();
 
 const userController = {
@@ -41,7 +39,7 @@ const userController = {
             }
           );
           const { password, ...userWithoutPassword } = user;
-          return res.status(200).json({ token,  user: userWithoutPassword});
+          return res.status(200).json({ token, user: userWithoutPassword });
         }
       })
       .catch((error) => {
@@ -80,7 +78,7 @@ const userController = {
         },
       })
       .catch((error) => {
-        logger.error(error);
+        logger.logger.error(error);
       })
       .then((user) => {
         return user;
@@ -108,7 +106,7 @@ const userController = {
           .json({ token: token, user: userWithoutPassword });
       })
       .catch((error) => {
-        logger.error(error);
+        logger.logger.error(error);
         return res.status(500).json({ message: error.message });
       });
   },
@@ -125,7 +123,7 @@ const userController = {
         return res.status(204).send();
       })
       .catch((error) => {
-        logger.error(error.message);
+        logger.logger.error(error.message);
         return res.status(500).json({ message: error.message });
       });
   },
@@ -156,7 +154,7 @@ const userController = {
         return res.status(204).send();
       })
       .catch((error) => {
-        logger.error(error.message);
+        logger.logger.error(error.message);
 
         return res.status(500).json({ message: error.message });
       });
@@ -230,7 +228,7 @@ const userController = {
           return res.status(204).send();
         })
         .catch((error) => {
-          logger.error(error.message);
+          logger.logger.error(error.message);
 
           return res.status(500).json({ message: error.message });
         });

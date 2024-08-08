@@ -9,7 +9,8 @@ import bodyParser from "body-parser";
 const server = express();
 const HOST = process.env.HOST ?? "localhost";
 const PORT = process.env.PORT as unknown as number ?? 3000;
-const logger = PinoHttp({
+
+export const logger = PinoHttp({
   transport: {
     level: "debug",
     target: "pino-pretty",
