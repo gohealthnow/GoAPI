@@ -11,7 +11,9 @@ Table User {
   name String [not null]
   avatar Int
   bio String
+  products Product [not null]
   role Role [not null, default: 'USER']
+  Review Review [not null]
 }
 
 Table Product {
@@ -19,9 +21,55 @@ Table Product {
   name String [not null]
   description String
   price Float [not null]
+  stock Int [not null]
+  image String [not null]
+  weight Float [not null]
+  dimensions String [not null]
+  rating Float [not null]
+  reviews Review [not null]
   createdAt DateTime [default: `now()`, not null]
   updatedAt DateTime [not null]
   categories Category [not null]
+  user User [not null]
+  Pharmacy Pharmacy [not null]
+}
+
+Table Review {
+  id Int [pk, increment]
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+  title String [not null]
+  body String [not null]
+  rating Int [not null]
+  product Product [not null]
+  user User [not null]
+}
+
+Table Pharmacy {
+  id Int [pk, increment]
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+  name String [not null]
+  description String
+  phone String [not null]
+  email String [not null]
+  image String [not null]
+  products Product [not null]
+  geolocation geolocation [not null]
+}
+
+Table geolocation {
+  id Int [pk, increment]
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+  latitude Float [not null]
+  longitude Float [not null]
+  address String [not null]
+  cep String [not null]
+  city String [not null]
+  state String [not null]
+  country String [not null]
+  pharmacy Pharmacy [not null]
 }
 
 Table Category {
@@ -30,9 +78,52 @@ Table Category {
   products Product [not null]
 }
 
+Table Cart {
+  id String [pk]
+  userId String [not null]
+  productId String [not null]
+  quantity Int [not null]
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+}
+
+Table Order {
+  id String [pk]
+  userId String [not null]
+  productId String [not null]
+  quantity Int [not null]
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+}
+
+Table ProductToUser {
+  productsId Int [ref: > Product.id]
+  userId Int [ref: > User.id]
+}
+
+Table ReviewToUser {
+  reviewId Int [ref: > Review.id]
+  userId Int [ref: > User.id]
+}
+
+Table ProductToReview {
+  reviewsId Int [ref: > Review.id]
+  productId Int [ref: > Product.id]
+}
+
 Table CategoryToProduct {
   categoriesId Int [ref: > Category.id]
   productsId Int [ref: > Product.id]
+}
+
+Table PharmacyToProduct {
+  pharmacyId Int [ref: > Pharmacy.id]
+  productsId Int [ref: > Product.id]
+}
+
+Table PharmacyTogeolocation {
+  geolocationId Int [ref: > geolocation.id]
+  pharmacyId Int [ref: > Pharmacy.id]
 }
 
 Enum Role {
