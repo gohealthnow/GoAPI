@@ -32,6 +32,7 @@ const ProductController = {
 
     return res.status(201).json({newProduct, message: "Product created!"})
   }
+
 };
 
 export default ProductController;

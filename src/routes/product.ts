@@ -3,7 +3,7 @@ import ProductController from "../controllers/product.controller";
 
 const productRouter = Router();
 
-productRouter.get("/", (req, res) => {
+productRouter.post("/create", (req, res) => {
   ProductController.create(req,res);
 });
 

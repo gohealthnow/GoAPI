@@ -23,8 +23,8 @@
     }
   ],
   "paths": {
-    "/": {
-      "get": {
+    "/create": {
+      "post": {
         "description": "",
         "responses": {
           "default": {
