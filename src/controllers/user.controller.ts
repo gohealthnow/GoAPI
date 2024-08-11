@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import { PrismaClient, Role } from "@prisma/client";
 import jwt, { JwtPayload } from "jsonwebtoken";
-import { ADMIN_SECRET, JWT_SECRET ,logger } from "../server";
+import { ADMIN_SECRET, JWT_SECRET, logger } from "../server";
 import { regExpEmail } from "../middlewares/checkin";
 
 const prisma = new PrismaClient();
@@ -130,11 +130,16 @@ const userController = {
   listAll: async (req: Request, res: Response) => {
     const users = await prisma.user.findMany();
 
-    if (!users) {
+    const usersWithoutPassword = users.map((user) => {
+      const { password, ...userWithoutPassword } = user;
+      return userWithoutPassword;
+    });
+
+    if (!usersWithoutPassword) {
       return res.status(404).json({ message: "Users not found" });
     }
 
-    return res.status(200).json(users);
+    return res.status(200).json(usersWithoutPassword);
   },
   update: async (req: Request, res: Response) => {
     const { id } = req.params;
@@ -243,17 +248,86 @@ const userController = {
       return res.status(400).json({ message: "Missing id field" });
     }
 
-    const user = await prisma.user.findUnique({
-      where: {
-        id: Number(id),
-      },
-    });
+    const user = await prisma.user
+      .findUnique({
+        where: {
+          id: Number(id),
+        },
+      })
+      .catch((error) => {
+        logger.logger.error(error.message);
+        return error;
+      });
+
+    const { password, ...userWithoutPassword } = user;
+
+    if (!userWithoutPassword) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    return res.status(200).json({ user: userWithoutPassword });
+  },
+  addProdutInUser: async (req: Request, res: Response) => {
+    const { id: userId, productId } = req.query;
+
+    if (!userId) {
+      return res.status(400).json({ message: "Missing id field" });
+    }
+
+    if (!productId) {
+      return res.status(400).json({ message: "Missing productId field" });
+    }
+
+    const user = await prisma.user
+      .findUnique({
+        where: {
+          id: Number(userId),
+        },
+      })
+      .catch((error) => {
+        logger.logger.error(error.message);
+        return res.status(500).json({ message: error.message });
+      });
 
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
 
-    return res.status(200).json(user);
+    const productExists = await prisma.product
+      .findUnique({
+        where: {
+          id: Number(productId),
+        },
+      })
+      .catch((error) => {
+        logger.logger.error(error.message);
+        return res.status(500).json({ message: error.message });
+      });
+
+    if (!productExists) {
+      return res.status(404).json({ message: "Product not found" });
+    }
+
+    await prisma.user
+      .update({
+        where: {
+          id: Number(userId),
+        },
+        data: {
+          products: {
+            connect: {
+              id: Number(productId),
+            },
+          },
+        },
+      })
+      .then(() => {
+        return res.status(204).send();
+      })
+      .catch((error) => {
+        logger.logger.error(error.message);
+        return res.status(500).json({ message: error.message });
+      });
   },
 };
 
