@@ -18,8 +18,8 @@ export const logger = PinoHttp({
       destination: 2,
       all: true,
       translateTime: true,
-    },
-  },
+    }
+  }
 });
 
 export const JWT_SECRET = process.env.JWT_SECRET ?? "default_secret";
