@@ -23,12 +23,139 @@
     }
   ],
   "paths": {
-    "/create": {
+    "/product/create": {
       "post": {
-        "description": "",
+        "tags": [
+          "Products"
+        ],
+        "description": "Endpoint para criar um produto.",
+        "parameters": [
+          {
+            "name": "Product",
+            "in": "body",
+            "description": "Product information.",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "example": "Product Name"
+                },
+                "price": {
+                  "type": "number",
+                  "example": 100
+                }
+              },
+              "required": [
+                "name",
+                "price"
+              ]
+            }
+          }
+        ],
         "responses": {
-          "default": {
-            "description": ""
+          "201": {
+            "description": "Produto criado com sucesso.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Product"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/Product"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Erro ao criar produto."
+          },
+          "409": {
+            "description": "Produto já existe."
+          },
+          "500": {
+            "description": "Erro no servidor."
+          }
+        }
+      }
+    },
+    "/product/": {
+      "get": {
+        "tags": [
+          "Products"
+        ],
+        "description": "Endpoint para listar todos os produtos.",
+        "responses": {
+          "200": {
+            "description": "Produtos listados com sucesso.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Product"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/Product"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Erro ao listar produtos."
+          },
+          "500": {
+            "description": "Erro no servidor."
+          }
+        }
+      }
+    },
+    "/product/{id}": {
+      "delete": {
+        "tags": [
+          "Products"
+        ],
+        "description": "Endpoint para deletar um produto.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Product",
+            "in": "params",
+            "description": "Product information.",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "number",
+                  "example": 1
+                }
+              },
+              "required": [
+                "id"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Produto deletado com sucesso."
+          },
+          "404": {
+            "description": "Erro ao deletar produto."
+          },
+          "500": {
+            "description": "Erro no servidor."
           }
         }
       }
