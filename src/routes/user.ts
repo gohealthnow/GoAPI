@@ -173,4 +173,27 @@ userRouter.delete("/:id", (req, res) => {
   userController.delete(req, res);
 });
 
+userRouter.post("/link", async (req, res) => {
+  /* #swagger.tags = ['User']
+      #swagger.path = '/user/link/'
+       #swagger.parameters['body'] = {
+        in: 'body',
+        description: 'Update Information',
+        required: true,
+        schema: {
+            $id: 1,
+            $prodid: 6,
+          },
+      }
+      #swagger.description = 'Endpoint para linkar um produto ao usuário.'
+      #swagger.responses[200] = {
+        description: 'Produto linkado ao usuário com sucesso.'
+      }
+      #swagger.responses[500] = {
+        description: 'Erro no servidor.'
+      }
+  */
+  userController.linkProductToUser(req, res);
+});
+
 export default userRouter;

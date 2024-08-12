@@ -59,14 +59,6 @@ productRouter.delete("/:id", (req, res) => {
   /* #swagger.tags = ['Products']
       #swagger.path = '/product/{id}'
       #swagger.description = 'Endpoint para deletar um produto.'
-      #swagger.parameters['Product'] = {
-        in: 'params',
-        description: 'Product information.',
-        required: true,
-        schema: {
-            $id: 1,
-          },
-        }
       #swagger.responses[204] = {
         description: 'Produto deletado com sucesso.',
       }
