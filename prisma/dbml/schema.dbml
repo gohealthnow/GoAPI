@@ -11,14 +11,14 @@ Table User {
   name String [not null]
   avatar Int
   bio String
-  products Product [not null]
+  Product Product [not null]
   role Role [not null, default: 'USER']
   Review Review [not null]
 }
 
 Table Product {
   id Int [pk, increment]
-  name String [not null]
+  name String [unique, not null]
   description String
   price Float
   stock Int
@@ -88,7 +88,7 @@ Table Order {
 }
 
 Table ProductToUser {
-  productsId Int [ref: > Product.id]
+  productId Int [ref: > Product.id]
   userId Int [ref: > User.id]
 }
 

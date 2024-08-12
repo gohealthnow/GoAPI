@@ -487,6 +487,47 @@
           }
         ]
       }
+    },
+    "/user/link/": {
+      "post": {
+        "tags": [
+          "User"
+        ],
+        "description": "Endpoint para linkar um produto ao usuário.",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "description": "Update Information",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "number",
+                  "example": 1
+                },
+                "prodid": {
+                  "type": "number",
+                  "example": 6
+                }
+              },
+              "required": [
+                "id",
+                "prodid"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Produto linkado ao usuário com sucesso."
+          },
+          "500": {
+            "description": "Erro no servidor."
+          }
+        }
+      }
     }
   },
   "components": {

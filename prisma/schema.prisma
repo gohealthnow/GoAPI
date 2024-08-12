@@ -22,11 +22,12 @@ model User {
   avatar   Int?
   bio      String?
 
-  products Product[]
+  Product Product[]
 
   role Role @default(USER)
 
   Review Review[]
+
 }
 
 model Product {
@@ -47,6 +48,7 @@ model Product {
   categories Category[]
 
   user User[]
+
 
   Pharmacy Pharmacy[]
 }
