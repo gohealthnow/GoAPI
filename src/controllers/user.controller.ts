@@ -128,7 +128,12 @@ const userController = {
       });
   },
   listAll: async (req: Request, res: Response) => {
-    const users = await prisma.user.findMany();
+    const users = await prisma.user.findMany({
+      include: {
+        Product: true,
+        Review: true,
+      },
+    });
 
     const usersWithoutPassword = users.map((user) => {
       const { password, ...userWithoutPassword } = user;
@@ -153,6 +158,10 @@ const userController = {
         data: {
           email: email,
           password: password,
+        },
+        include: {
+          Product: true,
+          Review: true,
         },
       })
       .then(() => {
@@ -253,10 +262,17 @@ const userController = {
         where: {
           id: Number(id),
         },
+        include: {
+          Product: true,
+          Review: true,
+        }
       })
       .catch((error) => {
         logger.logger.error(error.message);
         return error;
+      })
+      .then((user) => {
+        return user;
       });
 
     const { password, ...userWithoutPassword } = user;
@@ -267,21 +283,24 @@ const userController = {
 
     return res.status(200).json({ user: userWithoutPassword });
   },
-  addProdutInUser: async (req: Request, res: Response) => {
-    const { id: userId, productId } = req.query;
+  linkProductToUser: async (req: Request, res: Response) => {
+    const { id, prodid } = req.body as {
+      id: string;
+      prodid: string;
+    };
 
-    if (!userId) {
+    if (!id) {
       return res.status(400).json({ message: "Missing id field" });
     }
 
-    if (!productId) {
-      return res.status(400).json({ message: "Missing productId field" });
+    if (!prodid) {
+      return res.status(400).json({ message: "Missing prodid field" });
     }
 
     const user = await prisma.user
       .findUnique({
         where: {
-          id: Number(userId),
+          id: Number(id),
         },
       })
       .catch((error) => {
@@ -296,7 +315,7 @@ const userController = {
     const productExists = await prisma.product
       .findUnique({
         where: {
-          id: Number(productId),
+          id: Number(prodid),
         },
       })
       .catch((error) => {
@@ -311,12 +330,12 @@ const userController = {
     await prisma.user
       .update({
         where: {
-          id: Number(userId),
+          id: Number(id),
         },
         data: {
-          products: {
+          Product: {
             connect: {
-              id: Number(productId),
+              id: Number(prodid),
             },
           },
         },

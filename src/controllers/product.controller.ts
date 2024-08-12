@@ -50,9 +50,9 @@ const ProductController = {
       return res.status(404).json({ message: "Error listing products" });
     });
 
-    if (products.toString.length === 0)
+    if (!products)
       return res.status(404).json({ message: "No products found" });
-    return res.status(200).json({ products });
+    return res.status(200).json({ products: products });
   },
   delete: async (req: Request, res: Response) => {
     const { id } = req.params;
