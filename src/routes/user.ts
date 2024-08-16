@@ -173,7 +173,7 @@ userRouter.delete("/:id", (req, res) => {
   userController.delete(req, res);
 });
 
-userRouter.post("/link", async (req, res) => {
+userRouter.post("/product", async (req, res) => {
   /* #swagger.tags = ['User']
       #swagger.path = '/user/link/'
        #swagger.parameters['body'] = {
