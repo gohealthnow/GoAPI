@@ -197,3 +197,5 @@ userRouter.post("/product", async (req, res) => {
 });
 
 export default userRouter;
+
+// Produtos para add: Alpazolan, Oxicodona, Dipirona
