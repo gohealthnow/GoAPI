@@ -175,7 +175,7 @@ userRouter.delete("/:id", (req, res) => {
 
 userRouter.post("/product", async (req, res) => {
   /* #swagger.tags = ['User']
-      #swagger.path = '/user/link/'
+      #swagger.path = '/user/product/'
        #swagger.parameters['body'] = {
         in: 'body',
         description: 'Update Information',
@@ -186,7 +186,7 @@ userRouter.post("/product", async (req, res) => {
           },
       }
       #swagger.description = 'Endpoint para linkar um produto ao usuário.'
-      #swagger.responses[200] = {
+      #swagger.responses[204] = {
         description: 'Produto linkado ao usuário com sucesso.'
       }
       #swagger.responses[500] = {
