@@ -5,8 +5,7 @@ const prisma = new PrismaClient();
 
 const ProductController = {
   create: async (req: Request, res: Response) => {
-    const { name, price } = req.body as { name: string; price: number };
-
+    const { name, price } = req.body;
     if (!name) return res.status(404).json({ message: "missing name field!" });
     if (!price)
       return res.status(404).json({ message: "missing price field!" });
@@ -73,6 +72,44 @@ const ProductController = {
         return res.status(500).json({ message: { ...error } });
       });
   },
+  getbyid: async (req: Request, res: Response) => {
+      const { id } = req.params;
+
+    if (!id) return res.status(404).json({ message: "missing id field!" });
+
+    const product = await prisma.product
+      .findUnique({
+        where: {
+          id: Number(id),
+        },
+      })
+      .catch((error) => {
+        logger.logger.error(error);
+        return res.status(404).json({ message: "Error finding product" });
+      });
+
+    if (!product) return res.status(404).json({ message: "Product not found" });
+    return res.status(200).json({ product: product });
+  },
+  getbyName: async (req: Request, res: Response) => {
+    const { name } = req.params;
+
+    if (!name) return res.status(404).json({ message: "missing name field!" });
+
+    const product = await prisma.product
+      .findUnique({
+        where: {
+          name: name,
+        },
+      })
+      .catch((error) => {
+        logger.logger.error(error);
+        return res.status(404).json({ message: "Error finding product" });
+      });
+
+    if (!product) return res.status(404).json({ message: "Product not found" });
+    return res.status(200).json({ product: product });
+  }
 };
 
 export default ProductController;

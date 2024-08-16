@@ -53,6 +53,8 @@ const userController = {
       password: string;
     };
 
+    logger.logger.info(req.body);
+
     if (!name) {
       return res.status(400).json({ message: "Missing name field" });
     }
@@ -265,7 +267,7 @@ const userController = {
         include: {
           Product: true,
           Review: true,
-        }
+        },
       })
       .catch((error) => {
         logger.logger.error(error.message);
