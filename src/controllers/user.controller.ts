@@ -253,7 +253,7 @@ const userController = {
     return res.status(401).json({ message: "Invalid username or password" });
   },
   getUserById: async (req: Request, res: Response) => {
-    const { id } = req.params;
+      const { id } = req.params;
 
     if (!id) {
       return res.status(400).json({ message: "Missing id field" });

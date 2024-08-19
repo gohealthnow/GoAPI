@@ -27,14 +27,6 @@ userRouter.get("/:id", (req, res) => {
   /* #swagger.tags = ['User']
       #swagger.path = '/user/{id}'
       #swagger.description = 'Endpoint para obter um usuário.'
-      #swagger.parameters['User'] = {
-        in: 'params',
-        description: 'User information.',
-        required: true,
-        schema: {
-            $id: 1,
-          },
-        }
       #swagger.responses[200] = {
         description: 'Usuário obtido com sucesso.',
         schema: {
