@@ -165,9 +165,9 @@ userRouter.delete("/:id", (req, res) => {
   userController.delete(req, res);
 });
 
-userRouter.post("/link", async (req, res) => {
+userRouter.post("/product", async (req, res) => {
   /* #swagger.tags = ['User']
-      #swagger.path = '/user/link/'
+      #swagger.path = '/user/product/'
        #swagger.parameters['body'] = {
         in: 'body',
         description: 'Update Information',
@@ -178,7 +178,7 @@ userRouter.post("/link", async (req, res) => {
           },
       }
       #swagger.description = 'Endpoint para linkar um produto ao usuário.'
-      #swagger.responses[200] = {
+      #swagger.responses[204] = {
         description: 'Produto linkado ao usuário com sucesso.'
       }
       #swagger.responses[500] = {
@@ -189,3 +189,5 @@ userRouter.post("/link", async (req, res) => {
 });
 
 export default userRouter;
+
+// Produtos para add: Alpazolan, Oxicodona, Dipirona

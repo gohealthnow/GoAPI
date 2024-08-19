@@ -79,6 +79,23 @@
           "500": {
             "description": "Erro no servidor."
           }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "example": "any"
+                  },
+                  "price": {
+                    "example": "any"
+                  }
+                }
+              }
+            }
+          }
         }
       }
     },
@@ -127,24 +144,6 @@
             "schema": {
               "type": "string"
             }
-          },
-          {
-            "name": "Product",
-            "in": "params",
-            "description": "Product information.",
-            "required": true,
-            "schema": {
-              "type": "object",
-              "properties": {
-                "id": {
-                  "type": "number",
-                  "example": 1
-                }
-              },
-              "required": [
-                "id"
-              ]
-            }
           }
         ],
         "responses": {
@@ -153,6 +152,86 @@
           },
           "404": {
             "description": "Erro ao deletar produto."
+          },
+          "500": {
+            "description": "Erro no servidor."
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Products"
+        ],
+        "description": "Endpoint para buscar um produto por id.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Produto encontrado com sucesso.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Product"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/Product"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Erro ao buscar produto."
+          },
+          "500": {
+            "description": "Erro no servidor."
+          }
+        }
+      }
+    },
+    "/product/name/{name}": {
+      "post": {
+        "tags": [
+          "Products"
+        ],
+        "description": "Endpoint para buscar um produto por nome.",
+        "parameters": [
+          {
+            "name": "name",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Produto encontrado com sucesso.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Product"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/Product"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Erro ao buscar produto."
           },
           "500": {
             "description": "Erro no servidor."
@@ -181,7 +260,7 @@
         "tags": [
           "User"
         ],
-        "description": "Endpoint\r  para listar todos os usuários.",
+        "description": "Endpoint  para listar todos os usuários.",
         "responses": {
           "200": {
             "description": "Usuários listados com sucesso.",
@@ -200,6 +279,9 @@
           },
           "400": {
             "description": "Erro ao listar usuários."
+          },
+          "404": {
+            "description": "Not Found"
           },
           "500": {
             "description": "Erro no servidor."
@@ -257,6 +339,9 @@
               }
             }
           },
+          "400": {
+            "description": "Bad Request"
+          },
           "404": {
             "description": "Usuário não encontrado."
           },
@@ -284,6 +369,9 @@
           "200": {
             "description": "Usuário deletado com sucesso."
           },
+          "204": {
+            "description": "No Content"
+          },
           "500": {
             "description": "Erro no servidor."
           }
@@ -295,7 +383,7 @@
         "tags": [
           "User"
         ],
-        "description": "Endpoint\r  para realizar login.",
+        "description": "Endpoint  para realizar login.",
         "parameters": [
           {
             "name": "User",
@@ -337,11 +425,31 @@
               }
             }
           },
+          "400": {
+            "description": "Bad Request"
+          },
           "401": {
             "description": "Credenciais inválidas."
           },
           "500": {
             "description": "Erro no servidor."
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": {
+                    "example": "any"
+                  },
+                  "password": {
+                    "example": "any"
+                  }
+                }
+              }
+            }
           }
         }
       }
@@ -398,8 +506,34 @@
               }
             }
           },
+          "400": {
+            "description": "Bad Request"
+          },
+          "409": {
+            "description": "Conflict"
+          },
           "500": {
             "description": "Erro no servidor."
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "example": "any"
+                  },
+                  "email": {
+                    "example": "any"
+                  },
+                  "password": {
+                    "example": "any"
+                  }
+                }
+              }
+            }
           }
         }
       }
@@ -423,6 +557,15 @@
           "User"
         ],
         "description": "Endpoint para obter informações do usuário.",
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
         "responses": {
           "200": {
             "description": "Informações do usuário obtidas com sucesso.",
@@ -438,6 +581,15 @@
                 }
               }
             }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "498": {
+            "description": ""
           }
         }
       }
@@ -449,6 +601,27 @@
         ],
         "description": "Endpoint para atualizar o papel do usuário.",
         "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "id",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "role",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
           {
             "name": "User",
             "in": "params",
@@ -476,6 +649,15 @@
         "responses": {
           "200": {
             "description": "Papel do usuário atualizado com sucesso."
+          },
+          "204": {
+            "description": "No Content"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
           },
           "500": {
             "description": "Erro no servidor."
@@ -523,8 +705,34 @@
           "200": {
             "description": "Produto linkado ao usuário com sucesso."
           },
+          "204": {
+            "description": "No Content"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "404": {
+            "description": "Not Found"
+          },
           "500": {
             "description": "Erro no servidor."
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "example": "any"
+                  },
+                  "prodid": {
+                    "example": "any"
+                  }
+                }
+              }
+            }
           }
         }
       }
@@ -566,6 +774,21 @@
                   "type": {
                     "type": "string",
                     "example": "string"
+                  }
+                }
+              },
+              "product": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "example": "array"
+                  },
+                  "items": {
+                    "xml": {
+                      "name": "product"
+                    },
+                    "$ref": "#/components/schemas/Product"
                   }
                 }
               },
@@ -631,12 +854,84 @@
                   }
                 }
               },
+              "description": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "example": "string"
+                  }
+                }
+              },
               "price": {
                 "type": "object",
                 "properties": {
                   "type": {
                     "type": "string",
                     "example": "number"
+                  }
+                }
+              },
+              "stock": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "example": "number"
+                  }
+                }
+              },
+              "image": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "example": "string"
+                  }
+                }
+              },
+              "weight": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "example": "number"
+                  }
+                }
+              },
+              "dimensions": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "example": "string"
+                  }
+                }
+              },
+              "rating": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "example": "number"
+                  }
+                }
+              },
+              "createdAt": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "example": "string"
+                  }
+                }
+              },
+              "updatedAt": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "example": "string"
                   }
                 }
               }

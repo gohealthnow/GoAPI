@@ -72,4 +72,44 @@ productRouter.delete("/:id", (req, res) => {
   ProductController.delete(req, res);
 });
 
+productRouter.post("/:id", (req, res) => {
+  /* #swagger.tags = ['Products']
+      #swagger.path = '/product/{id}'
+      #swagger.description = 'Endpoint para buscar um produto por id.'
+      #swagger.responses[200] = {
+        description: 'Produto encontrado com sucesso.',
+        schema: {
+          $ref: '#/definitions/Product'
+        }
+      }
+      #swagger.responses[404] = {
+        description: 'Erro ao buscar produto.'
+      }
+      #swagger.responses[500] = {
+        description: 'Erro no servidor.'
+      }
+  */
+  ProductController.getbyid(req, res);
+});
+
+productRouter.post("/name/:name", (req, res) => {
+  /* #swagger.tags = ['Products']
+      #swagger.path = '/product/name/{name}'
+      #swagger.description = 'Endpoint para buscar um produto por nome.'
+      #swagger.responses[200] = {
+        description: 'Produto encontrado com sucesso.',
+        schema: {
+          $ref: '#/definitions/Product'
+        }
+      }
+      #swagger.responses[404] = {
+        description: 'Erro ao buscar produto.'
+      }
+      #swagger.responses[500] = {
+        description: 'Erro no servidor.'
+      }
+  */
+  ProductController.getbyName(req, res);
+})
+
 export default productRouter;
