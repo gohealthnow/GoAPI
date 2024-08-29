@@ -21,6 +21,7 @@ const pharmacyController = {
     if (!pharmacy)
       return res.status(404).json({ message: "No pharmacy found" });
     return res.status(200).json({ pharmacy: pharmacy });
+    
   },
 };
 
