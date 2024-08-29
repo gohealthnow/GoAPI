@@ -23,6 +23,36 @@
     }
   ],
   "paths": {
+    "/pharmacy/{id}": {
+      "get": {
+        "tags": [
+          "Pharmacy"
+        ],
+        "description": "Endpoint para listar uma farmácia.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Pharmacy   identification."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Farmácia listada com sucesso."
+          },
+          "404": {
+            "description": "Erro ao listar farmácia."
+          },
+          "500": {
+            "description": "Erro no servidor."
+          }
+        }
+      }
+    },
     "/product/create": {
       "post": {
         "tags": [
@@ -78,23 +108,6 @@
           },
           "500": {
             "description": "Erro no servidor."
-          }
-        },
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "name": {
-                    "example": "any"
-                  },
-                  "price": {
-                    "example": "any"
-                  }
-                }
-              }
-            }
           }
         }
       }
@@ -260,7 +273,7 @@
         "tags": [
           "User"
         ],
-        "description": "Endpoint  para listar todos os usuários.",
+        "description": "Endpoint\r  para listar todos os usuários.",
         "responses": {
           "200": {
             "description": "Usuários listados com sucesso.",
@@ -279,9 +292,6 @@
           },
           "400": {
             "description": "Erro ao listar usuários."
-          },
-          "404": {
-            "description": "Not Found"
           },
           "500": {
             "description": "Erro no servidor."
@@ -303,24 +313,6 @@
             "schema": {
               "type": "string"
             }
-          },
-          {
-            "name": "User",
-            "in": "params",
-            "description": "User information.",
-            "required": true,
-            "schema": {
-              "type": "object",
-              "properties": {
-                "id": {
-                  "type": "number",
-                  "example": 1
-                }
-              },
-              "required": [
-                "id"
-              ]
-            }
           }
         ],
         "responses": {
@@ -338,9 +330,6 @@
                 }
               }
             }
-          },
-          "400": {
-            "description": "Bad Request"
           },
           "404": {
             "description": "Usuário não encontrado."
@@ -369,9 +358,6 @@
           "200": {
             "description": "Usuário deletado com sucesso."
           },
-          "204": {
-            "description": "No Content"
-          },
           "500": {
             "description": "Erro no servidor."
           }
@@ -383,7 +369,7 @@
         "tags": [
           "User"
         ],
-        "description": "Endpoint  para realizar login.",
+        "description": "Endpoint\r  para realizar login.",
         "parameters": [
           {
             "name": "User",
@@ -425,31 +411,11 @@
               }
             }
           },
-          "400": {
-            "description": "Bad Request"
-          },
           "401": {
             "description": "Credenciais inválidas."
           },
           "500": {
             "description": "Erro no servidor."
-          }
-        },
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "email": {
-                    "example": "any"
-                  },
-                  "password": {
-                    "example": "any"
-                  }
-                }
-              }
-            }
           }
         }
       }
@@ -506,34 +472,8 @@
               }
             }
           },
-          "400": {
-            "description": "Bad Request"
-          },
-          "409": {
-            "description": "Conflict"
-          },
           "500": {
             "description": "Erro no servidor."
-          }
-        },
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "name": {
-                    "example": "any"
-                  },
-                  "email": {
-                    "example": "any"
-                  },
-                  "password": {
-                    "example": "any"
-                  }
-                }
-              }
-            }
           }
         }
       }
@@ -557,15 +497,6 @@
           "User"
         ],
         "description": "Endpoint para obter informações do usuário.",
-        "parameters": [
-          {
-            "name": "authorization",
-            "in": "header",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
         "responses": {
           "200": {
             "description": "Informações do usuário obtidas com sucesso.",
@@ -581,15 +512,6 @@
                 }
               }
             }
-          },
-          "401": {
-            "description": "Unauthorized"
-          },
-          "404": {
-            "description": "Not Found"
-          },
-          "498": {
-            "description": ""
           }
         }
       }
@@ -601,27 +523,6 @@
         ],
         "description": "Endpoint para atualizar o papel do usuário.",
         "parameters": [
-          {
-            "name": "authorization",
-            "in": "header",
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "id",
-            "in": "query",
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "role",
-            "in": "query",
-            "schema": {
-              "type": "string"
-            }
-          },
           {
             "name": "User",
             "in": "params",
@@ -650,15 +551,6 @@
           "200": {
             "description": "Papel do usuário atualizado com sucesso."
           },
-          "204": {
-            "description": "No Content"
-          },
-          "400": {
-            "description": "Bad Request"
-          },
-          "401": {
-            "description": "Unauthorized"
-          },
           "500": {
             "description": "Erro no servidor."
           }
@@ -670,7 +562,7 @@
         ]
       }
     },
-    "/user/link/": {
+    "/user/product/": {
       "post": {
         "tags": [
           "User"
@@ -702,37 +594,11 @@
           }
         ],
         "responses": {
-          "200": {
-            "description": "Produto linkado ao usuário com sucesso."
-          },
           "204": {
-            "description": "No Content"
-          },
-          "400": {
-            "description": "Bad Request"
-          },
-          "404": {
-            "description": "Not Found"
+            "description": "Produto linkado ao usuário com sucesso."
           },
           "500": {
             "description": "Erro no servidor."
-          }
-        },
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "id": {
-                    "example": "any"
-                  },
-                  "prodid": {
-                    "example": "any"
-                  }
-                }
-              }
-            }
           }
         }
       }
