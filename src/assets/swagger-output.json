@@ -53,6 +53,72 @@
         }
       }
     },
+    "/pharmacy/": {
+      "get": {
+        "tags": [
+          "Pharmacy"
+        ],
+        "description": "Endpoint para listar todas as farmácias.",
+        "responses": {
+          "200": {
+            "description": "Farmácias listadas com sucesso."
+          },
+          "404": {
+            "description": "Erro ao listar farmácias."
+          },
+          "500": {
+            "description": "Erro no servidor."
+          }
+        }
+      }
+    },
+    "/pharmacy/create": {
+      "post": {
+        "tags": [
+          "Pharmacy"
+        ],
+        "description": "Endpoint para criar uma farmácia.",
+        "parameters": [
+          {
+            "name": "Pharmacy",
+            "in": "body",
+            "description": "Pharmacy information.",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "example": "Pharmacy Name"
+                },
+                "address": {
+                  "type": "string",
+                  "example": "Pharmacy Address"
+                }
+              },
+              "required": [
+                "name",
+                "address"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Farmácia criada com sucesso."
+          },
+          "404": {
+            "description": "Erro ao criar farmácia."
+          },
+          "409": {
+            "description": "Farmácia já existe."
+          },
+          "500": {
+            "description": "Erro no servidor."
+          }
+        }
+      }
+    },
     "/product/create": {
       "post": {
         "tags": [

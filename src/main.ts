@@ -1,3 +1,4 @@
+import pharmacyRouter from "./routes/pharmacy";
 import productRouter from "./routes/product";
 import serverRouter from "./routes/server";
 import userRouter from "./routes/user";
@@ -8,3 +9,5 @@ app.use("/user", userRouter);
 app.use("/product", productRouter);
 
 app.use("/server", serverRouter);
+
+app.use("/pharmacy", pharmacyRouter);
