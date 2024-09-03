@@ -671,15 +671,6 @@
           "204": {
             "description": "Produto linkado ao usuário com sucesso."
           },
-          "204": {
-            "description": "No Content"
-          },
-          "400": {
-            "description": "Bad Request"
-          },
-          "404": {
-            "description": "Not Found"
-          },
           "500": {
             "description": "Erro no servidor."
           }

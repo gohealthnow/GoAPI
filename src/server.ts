@@ -5,13 +5,11 @@ import ngrok from "@ngrok/ngrok";
 import cors from "cors";
 import express from "express";
 import bodyParser from "body-parser";
-import pulsePrisma from "../prisma/pulse";
+import prismaClientPulse from "../prisma/pulse";
 
 const server = express();
 const HOST = process.env.HOST ?? "localhost";
 const PORT = (process.env.PORT as unknown as number) ?? 3000;
-
-
 
 export const logger = PinoHttp({
   transport: {
@@ -42,15 +40,12 @@ server.set("view engine", "ejs");
 server.set("views", "./views");
 
 async function main() {
-  const stream = await pulsePrisma.notification.stream({
-    name: "notification-stream",
-  });
-
+  // Create a stream from the 'User' model
+  const stream = await prismaClientPulse.user.stream({ name: "user-stream" });
   for await (const event of stream) {
-    console.log("New event:", event);
+    console.log("Just received an event:", event);
   }
 }
-
 main();
 
 server.listen(PORT, () => {
