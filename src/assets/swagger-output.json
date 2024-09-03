@@ -94,11 +94,16 @@
                 "address": {
                   "type": "string",
                   "example": "Pharmacy Address"
+                },
+                "email": {
+                  "type": "string",
+                  "example": "Pharmacy Email"
                 }
               },
               "required": [
                 "name",
-                "address"
+                "address",
+                "email"
               ]
             }
           }
@@ -106,6 +111,9 @@
         "responses": {
           "201": {
             "description": "Farmácia criada com sucesso."
+          },
+          "400": {
+            "description": "Campos obrigatórios não preenchidos."
           },
           "404": {
             "description": "Erro ao criar farmácia."
