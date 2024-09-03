@@ -303,24 +303,6 @@
             "schema": {
               "type": "string"
             }
-          },
-          {
-            "name": "User",
-            "in": "params",
-            "description": "User information.",
-            "required": true,
-            "schema": {
-              "type": "object",
-              "properties": {
-                "id": {
-                  "type": "number",
-                  "example": 1
-                }
-              },
-              "required": [
-                "id"
-              ]
-            }
           }
         ],
         "responses": {
@@ -670,7 +652,7 @@
         ]
       }
     },
-    "/user/link/": {
+    "/user/product/": {
       "post": {
         "tags": [
           "User"
@@ -702,11 +684,8 @@
           }
         ],
         "responses": {
-          "200": {
-            "description": "Produto linkado ao usuário com sucesso."
-          },
           "204": {
-            "description": "No Content"
+            "description": "Produto linkado ao usuário com sucesso."
           },
           "400": {
             "description": "Bad Request"
