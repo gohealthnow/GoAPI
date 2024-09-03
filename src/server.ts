@@ -5,10 +5,11 @@ import PinoHttp from "pino-http";
 import cors from "cors";
 import express from "express";
 import bodyParser from "body-parser";
+import pulsePrisma from "../prisma/pulse";
 
 const server = express();
 const HOST = process.env.HOST ?? "localhost";
-const PORT = process.env.PORT as unknown as number ?? 3000;
+const PORT = (process.env.PORT as unknown as number) ?? 3000;
 
 export const logger = PinoHttp({
   transport: {
@@ -18,8 +19,8 @@ export const logger = PinoHttp({
       destination: 2,
       all: true,
       translateTime: true,
-    }
-  }
+    },
+  },
 });
 
 export const JWT_SECRET = process.env.JWT_SECRET ?? "default_secret";
@@ -37,6 +38,18 @@ server.use(express.static("views"));
 
 server.set("view engine", "ejs");
 server.set("views", "./views");
+
+async function main() {
+  const stream = await pulsePrisma.notification.stream({
+    name: "notification-stream",
+  });
+
+  for await (const event of stream) {
+    console.log("New event:", event);
+  }
+}
+
+main();
 
 server.listen(PORT, () => {
   logger.logger.info(
