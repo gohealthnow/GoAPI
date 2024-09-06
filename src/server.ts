@@ -5,6 +5,7 @@ import ngrok from "@ngrok/ngrok";
 import cors from "cors";
 import express from "express";
 import bodyParser from "body-parser";
+import path from "path";
 
 const server = express();
 const HOST = process.env.HOST ?? "localhost";
@@ -25,6 +26,11 @@ export const logger = PinoHttp({
 export const JWT_SECRET = process.env.JWT_SECRET ?? "default_secret";
 export const ADMIN_SECRET = process.env.ADMIN_SECRET;
 
+server.use((_req, res, next) => {
+  res.setHeader("ngrok-skip-browser-warning", "true");
+  next();
+});
+
 server.use(cors());
 server.use(["/doc", "/docs"], swaggerUi.serve, swaggerUi.setup(swaggerFile));
 server.use(logger);
@@ -33,10 +39,10 @@ server.use(bodyParser.json());
 server.use(express.urlencoded({ extended: false }));
 
 server.use(express.static("public"));
-server.use(express.static("views"));
 
-server.set("view engine", "ejs");
-server.set("views", "./views");
+server.get("/", (req, res) => {
+  res.sendFile(path.join(__dirname, "public", "index.html"));
+});
 
 server.listen(PORT, async () => {
   logger.logger.info(`Server running at http://${HOST}:${PORT}`);
