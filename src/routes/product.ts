@@ -112,4 +112,24 @@ productRouter.post("/name/:name", (req, res) => {
   ProductController.getbyName(req, res);
 })
 
+productRouter.post("/update/:id", (req, res) => {
+  /* #swagger.tags = ['Products']
+      #swagger.path = '/product/update/{id}'
+      #swagger.description = 'Endpoint para atualizar um produto por id.'
+      #swagger.responses[200] = {
+        description: 'Produto atualizado com sucesso.',
+        schema: {
+          $ref: '#/definitions/Product'
+        }
+      }
+      #swagger.responses[404] = {
+        description: 'Erro ao atualizar produto.'
+      }
+      #swagger.responses[500] = {
+        description: 'Erro no servidor.'
+      }
+  */
+  ProductController.updatebyid(req, res);
+});
+
 export default productRouter;

@@ -5,7 +5,6 @@ import ngrok from "@ngrok/ngrok";
 import cors from "cors";
 import express from "express";
 import bodyParser from "body-parser";
-import prismaClientPulse from "../prisma/pulse";
 
 const server = express();
 const HOST = process.env.HOST ?? "localhost";
@@ -39,23 +38,15 @@ server.use(express.static("views"));
 server.set("view engine", "ejs");
 server.set("views", "./views");
 
-async function main() {
-  // Create a stream from the 'User' model
-  const stream = await prismaClientPulse.user.stream({ name: "user-stream" });
-  for await (const event of stream) {
-    console.log("Just received an event:", event);
-  }
-}
-main();
-
-server.listen(PORT, () => {
-  logger.logger.info(
-    `\nServer is running!\n\nAPI documentation: http://${HOST}:${PORT}/doc`
-  );
+server.listen(PORT, async () => {
+  logger.logger.info(`Server running at http://${HOST}:${PORT}`);
+  logger.logger.info(`Swagger running at http://${HOST}:${PORT}/docs`);
 });
 
-// Get your endpoint online
-ngrok.connect({ addr: PORT, authtoken_from_env: true })
-	.then(listener => logger.logger.info(`Ingress established at: ${listener.url()}`));
+ngrok
+  .connect({ addr: PORT, authtoken_from_env: true })
+  .then((listener) =>
+    logger.logger.info(`Ingress established at: ${listener.url()}`)
+  );
 
 export default server;

@@ -109,6 +109,36 @@ const ProductController = {
 
     if (!product) return res.status(404).json({ message: "Product not found" });
     return res.status(200).json({ product: product });
+  },
+  updatebyid: async (req: Request, res: Response) => {
+    const { id } = req.params;
+    const { name, price } = req.body;
+
+    if (!id) return res.status(404).json({ message: "missing id field!" });
+    if (!name) return res.status(404).json({ message: "missing name field!" });
+    if (!price) return res.status(404).json({ message: "missing price field!" });
+
+    await prisma.product
+      .update({
+        where: {
+          id: Number(id),
+        },
+        data: {
+          name: name,
+          price: price,
+        },
+      })
+      .then(() => {
+        // emitir o evento de atualização no banco de dados
+        prisma.$executeRaw`NOTIFY pharmacy_product_changes, ${JSON.stringify({
+          productId: id,
+        })}`;
+        return res.status(204).send();
+      })
+      .catch((error) => {
+        logger.logger.error(error);
+        return res.status(500).json({ message: { ...error } });
+      });
   }
 };
 
