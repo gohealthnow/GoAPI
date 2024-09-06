@@ -110,11 +110,22 @@ productRouter.post("/name/:name", (req, res) => {
       }
   */
   ProductController.getbyName(req, res);
-})
+});
 
-productRouter.post("/update/:id", (req, res) => {
+productRouter.put("/update/:id", (req, res) => {
   /* #swagger.tags = ['Products']
       #swagger.path = '/product/update/{id}'
+      #swagger.parameters['Product'] = {
+        in: 'body',
+        description: 'Product information.',
+        required: true,
+        schema: {
+            $name: "Product Name",
+            $price: 100.00,
+            $stock: 10,
+          },
+        }
+      }
       #swagger.description = 'Endpoint para atualizar um produto por id.'
       #swagger.responses[200] = {
         description: 'Produto atualizado com sucesso.',

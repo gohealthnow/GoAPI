@@ -129,10 +129,6 @@ const ProductController = {
         },
       })
       .then(() => {
-        // emitir o evento de atualização no banco de dados
-        prisma.$executeRaw`NOTIFY pharmacy_product_changes, ${JSON.stringify({
-          productId: id,
-        })}`;
         return res.status(204).send();
       })
       .catch((error) => {
