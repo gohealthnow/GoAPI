@@ -5,6 +5,8 @@ import ngrok from "@ngrok/ngrok";
 import cors from "cors";
 import express from "express";
 import bodyParser from "body-parser";
+import path from "path";
+import fs from "fs";
 
 const server = express();
 const HOST = process.env.HOST ?? "localhost";
@@ -33,11 +35,21 @@ server.use(bodyParser.json());
 server.use(express.urlencoded({ extended: false }));
 
 server.use(express.static("public"));
-server.use(express.static("views"));
 
 server.set("view engine", "ejs");
-server.set("views", "./views");
+server.set("views", "./public");
 
+server.use("/", (_req, res) => {
+  const indexPath = path.join(__dirname, "src", "public", "index.html");
+  fs.readFile(indexPath, "utf8", (err, data) => {
+    if (err) {
+      logger.logger.error("Error reading index.html", err);
+      res.status(500).send("Internal Server Error");
+      return;
+    }
+    res.send(data);
+  });
+});
 server.listen(PORT, async () => {
   logger.logger.info(`Server running at http://${HOST}:${PORT}`);
   logger.logger.info(`Swagger running at http://${HOST}:${PORT}/docs`);
