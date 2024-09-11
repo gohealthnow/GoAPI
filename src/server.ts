@@ -39,17 +39,7 @@ server.use(express.static("public"));
 server.set("view engine", "ejs");
 server.set("views", "./public");
 
-server.use("/", (_req, res) => {
-  const indexPath = path.join(__dirname, "src", "public", "index.html");
-  fs.readFile(indexPath, "utf8", (err, data) => {
-    if (err) {
-      logger.logger.error("Error reading index.html", err);
-      res.status(500).send("Internal Server Error");
-      return;
-    }
-    res.send(data);
-  });
-});
+server.use("/", express.static(path.join(__dirname, "public")));
 server.listen(PORT, async () => {
   logger.logger.info(`Server running at http://${HOST}:${PORT}`);
   logger.logger.info(`Swagger running at http://${HOST}:${PORT}/docs`);
