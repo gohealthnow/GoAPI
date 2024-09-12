@@ -66,9 +66,3 @@ pgClient.on('notification', async (msg) => {
     }
   }
 });
-
-// Iniciando o servidor HTTP com Socket.io
-const PORT = process.env.PORT || 3000;
-_server.listen(PORT, () => {
-  logger.logger.info(`Servidor rodando na porta ${PORT}`);
-});
