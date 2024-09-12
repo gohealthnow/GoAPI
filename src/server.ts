@@ -8,6 +8,7 @@ import bodyParser from "body-parser";
 import { createServer } from "node:http";
 import path from "path";
 import { Server } from "socket.io";
+import { pgClient } from "./utils/stream";
 
 const HOST = process.env.HOST ?? "localhost";
 const PORT = (process.env.PORT as unknown as number) ?? 3000;
@@ -26,7 +27,7 @@ export const logger = PinoHttp({
 
 const app = express();
 const server = createServer(app);
-const io = new Server(server, {
+export const io = new Server(server, {
   cors: { origin: true },
   connectionStateRecovery: {},
 });
@@ -34,7 +35,7 @@ const io = new Server(server, {
 export const JWT_SECRET = process.env.JWT_SECRET ?? "default_secret";
 export const ADMIN_SECRET = process.env.ADMIN_SECRET;
 
-io.on('connection', async (socket) => {
+io.on("connection", async (socket) => {
   logger.logger.info("Connection event triggered");
   logger.logger.info(`User connected: ${socket.id}`);
 });
@@ -47,6 +48,8 @@ app.use(bodyParser.json());
 app.use(express.urlencoded({ extended: false }));
 
 app.use(express.static("public"));
+
+pgClient.connect();
 
 app.set("view engine", "ejs");
 app.set("views", "./public");
