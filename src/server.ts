@@ -5,6 +5,7 @@ import ngrok from "@ngrok/ngrok";
 import cors from "cors";
 import express from "express";
 import bodyParser from "body-parser";
+import { createServer } from "node:http";
 import path from "path";
 import { Server } from "socket.io";
 
@@ -13,7 +14,7 @@ const PORT = (process.env.PORT as unknown as number) ?? 3000;
 
 export const logger = PinoHttp({
   transport: {
-    level: "info",
+    level: "debug",
     target: "pino-pretty",
     options: {
       destination: 2,
@@ -24,20 +25,16 @@ export const logger = PinoHttp({
 });
 
 const app = express();
-
-const expressServer = app.listen(PORT, () => {
-  logger.logger.info(`Server running at http://${HOST}:${PORT}`);
-  logger.logger.info(`Swagger running at http://${HOST}:${PORT}/docs`);
-});
-
-const io = new Server(expressServer, {
+const server = createServer(app);
+const io = new Server(server, {
   cors: { origin: true },
+  connectionStateRecovery: {},
 });
 
 export const JWT_SECRET = process.env.JWT_SECRET ?? "default_secret";
 export const ADMIN_SECRET = process.env.ADMIN_SECRET;
 
-io.on("connection", async (socket) => {
+io.on('connection', async (socket) => {
   logger.logger.info("Connection event triggered");
   logger.logger.info(`User connected: ${socket.id}`);
 });
@@ -61,5 +58,10 @@ ngrok
   .then((listener) =>
     logger.logger.info(`Ingress established at: ${listener.url()}`)
   );
+
+server.listen(PORT, () => {
+  logger.logger.info(`Server running at http://${HOST}:${PORT}`);
+  logger.logger.info(`Swagger running at http://${HOST}:${PORT}/docs`);
+});
 
 export default app;
