@@ -140,7 +140,9 @@ const ProductController = {
       });
   },
   stock: async (req: Request, res: Response) => {
-    const { id } = req.params;
+    const { id } = req.params as { id: string };
+
+    if (!id) return res.status(404).json({ message: "missing id field!" });
 
     const user = await prisma.user.findUnique({
       where: {
@@ -159,6 +161,8 @@ const ProductController = {
         },
       },
     });
+
+    logger.logger.info(products);
 
     if (!products)
       return res.status(404).json({ message: "No products found" });

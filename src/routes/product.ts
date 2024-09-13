@@ -132,7 +132,7 @@ productRouter.post("/update/:id", (req, res) => {
   ProductController.updatebyid(req, res);
 });
 
-productRouter.get("/stock" , (req, res) => {
+productRouter.get("/stock/:id", (req, res) => {
   /* #swagger.tags = ['Products']
       #swagger.path = '/product/stock/{id}'
       #swagger.description = 'Endpoint para verificar se existe um novo produto no estoque.'
@@ -147,6 +147,6 @@ productRouter.get("/stock" , (req, res) => {
       }
   */
   ProductController.stock(req, res);
-})
+});
 
 export default productRouter;
