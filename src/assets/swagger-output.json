@@ -424,6 +424,35 @@
         }
       }
     },
+    "/product/stock/{id}": {
+      "get": {
+        "tags": [
+          "Products"
+        ],
+        "description": "Endpoint para verificar se existe um novo produto no estoque.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Produto disponível para retirada."
+          },
+          "404": {
+            "description": "Produto não disponível."
+          },
+          "500": {
+            "description": "Erro no servidor."
+          }
+        }
+      }
+    },
     "/server": {
       "get": {
         "tags": [

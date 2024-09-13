@@ -132,4 +132,21 @@ productRouter.post("/update/:id", (req, res) => {
   ProductController.updatebyid(req, res);
 });
 
+productRouter.get("/stock" , (req, res) => {
+  /* #swagger.tags = ['Products']
+      #swagger.path = '/product/stock/{id}'
+      #swagger.description = 'Endpoint para verificar se existe um novo produto no estoque.'
+      #swagger.responses[200] = {
+        description: 'Produto disponível para retirada.'
+      }
+      #swagger.responses[404] = {
+        description: 'Produto não disponível.'
+      }
+      #swagger.responses[500] = {
+        description: 'Erro no servidor.'
+      }
+  */
+  ProductController.stock(req, res);
+})
+
 export default productRouter;
