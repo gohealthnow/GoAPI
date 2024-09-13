@@ -5,7 +5,12 @@ const prisma = new PrismaClient();
 
 const pharmacyController = {
   listall: async (req: Request, res: Response) => {
-    const pharmacy = await prisma.pharmacy.findMany().catch((error) => {
+    const pharmacy = await prisma.pharmacy.findMany({
+      include: {
+        PharmacyProduct: true,
+        geolocation: true,
+      },
+    }).catch((error) => {
       return res.status(404).json({ message: "Error listing pharmacy" });
     });
 

@@ -364,7 +364,7 @@
       }
     },
     "/product/update/{id}": {
-      "post": {
+      "put": {
         "tags": [
           "Products"
         ],
@@ -411,10 +411,60 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "name": {
-                    "example": "any"
-                  },
                   "price": {
+                    "example": "any"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/product/update/stock/{productId}/{pharmacyId}": {
+      "put": {
+        "tags": [
+          "Products"
+        ],
+        "description": "Endpoint para atualizar o estoque de um produto.",
+        "parameters": [
+          {
+            "name": "productId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "ID do produto."
+          },
+          {
+            "name": "pharmacyId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "ID da farmácia."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Estoque atualizado com sucesso."
+          },
+          "404": {
+            "description": "Erro ao atualizar estoque."
+          },
+          "500": {
+            "description": "Erro no servidor."
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "quantity": {
                     "example": "any"
                   }
                 }
