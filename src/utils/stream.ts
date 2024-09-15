@@ -7,7 +7,19 @@ const prisma = new PrismaClient();
 // Configurando o cliente do PostgreSQL
 export const pgClient = new Client({
   connectionString: process.env.DATABASE_URL,
+  keepAliveInitialDelayMillis: 3000,
 });
+
+export const connectWithRetry = () => {
+  pgClient.connect((err) => {
+    if (err) {
+      logger.logger.error("Erro ao conectar ao PostgreSQL: " + err);
+      setTimeout(connectWithRetry, 5000); // Tentar reconectar após 5 segundos
+    } else {
+      logger.logger.info("Conectado ao PostgreSQL");
+    }
+  });
+};
 
 // Escutando eventos do canal 'pharmacy_product_changes'
 pgClient.query("LISTEN pharmacy_product_changes");
@@ -20,7 +32,7 @@ pgClient.on("notification", async (msg) => {
     // Parse do payload recebido, assumindo que o payload é um JSON com pharmacyId e productId
     const payload = JSON.parse(msg.payload!);
     const { pharmacyId, productId, quantity } = payload;
-
+    
     // Encontrar o produto e o usuário relacionado
     const product = await prisma.product.findUnique({
       where: { id: productId },

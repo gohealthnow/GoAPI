@@ -5,10 +5,10 @@ import ngrok from "@ngrok/ngrok";
 import cors from "cors";
 import express from "express";
 import bodyParser from "body-parser";
-import { createServer } from "node:http";
 import path from "path";
+import http from "http";
 import { Server } from "socket.io";
-import { pgClient } from "./utils/stream";
+import { connectWithRetry, pgClient } from "./utils/stream";
 
 const HOST = process.env.HOST ?? "localhost";
 const PORT = (process.env.PORT as unknown as number) ?? 3000;
@@ -26,10 +26,25 @@ export const logger = PinoHttp({
 });
 
 const app = express();
-const server = createServer(app);
+
+const server = http.createServer(app);
+
 export const io = new Server(server, {
-  cors: { origin: true },
-  connectionStateRecovery: {},
+  cors: {
+    origin: process.env.CORS_ORIGIN ?? "",
+    methods: ["GET", "POST"],
+  },
+});
+
+io.on("connection", (socket) => {
+  logger.logger.info(`Usuário conectado: ${socket.id}`);
+  io.emit("userConnected", { id: socket.id });
+
+  // Listener para o evento "stock"
+  socket.on("stock", (data) => {
+    logger.logger.info(`Evento "stock" recebido com dados: ` + data);
+    // Aqui você pode adicionar a lógica para tratar o evento "stock"
+  });
 });
 
 export const JWT_SECRET = process.env.JWT_SECRET ?? "default_secret";
@@ -42,14 +57,12 @@ app.use(logger);
 app.use(bodyParser.json());
 app.use(express.urlencoded({ extended: false }));
 
-app.use(express.static("public"));
-
 pgClient.connect();
 
 app.set("view engine", "ejs");
 app.set("views", "./public");
 
-app.use("/", express.static(path.join(__dirname, "public")));
+app.use(express.static(path.join(__dirname, "..", "public")));
 
 ngrok
   .connect({ addr: PORT, authtoken_from_env: true })
@@ -61,5 +74,18 @@ server.listen(PORT, () => {
   logger.logger.info(`Server running at http://${HOST}:${PORT}`);
   logger.logger.info(`Swagger running at http://${HOST}:${PORT}/docs`);
 });
+
+// Adicionar manipulador de erros ao servidor
+server.on("error", (err) => {
+  logger.logger.error("Erro no servidor:", err);
+});
+
+pgClient.on("error", (err: Error) => {
+  logger.logger.error("Erro no cliente do PostgreSQL: " + err);
+  if (err.stack === 'ECONNRESET' || err.message.includes('Connection terminated unexpectedly')) {
+    connectWithRetry();
+  }
+});
+
 
 export default app;
