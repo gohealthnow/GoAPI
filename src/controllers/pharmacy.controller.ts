@@ -41,15 +41,19 @@ const pharmacyController = {
     return res.status(200).json({ pharmacy: pharmacy });
   },
   create: async (req: Request, res: Response) => {
-    const { name, customerZipCode, email, imageurl, phone } = req.body;
+    const { name, cep: customerPostalCode, email, imageurl, phone } = req.body;
 
-    if (!name || !customerZipCode || !email)
-      return res.status(400).json({
-        message: "missing fields!\n you need to send name and address",
-      });
-    // ! Implementação do correios para pegar o cep e preencher os campos sem precisar pesquisar caso tenha o CEP
+    if (!name) return res.status(404).json({ message: "missing name field!" });
+    if (!customerPostalCode)
+      return res.status(404).json({ message: "missing cep field!" });
+    if (!email)
+      return res.status(404).json({ message: "missing email field!" });
+    if (!phone)
+      return res.status(404).json({ message: "missing phone field!" });
+    if (!imageurl)
+      return res.status(404).json({ message: "missing imageurl field!" });
 
-    const fetchedZipCodeDetails = await consultarCep(customerZipCode).catch(
+    const fetchedZipCodeDetails = await consultarCep(customerPostalCode).catch(
       (error) => {
         return res.status(404).json({ message: "Error getting cep", error });
       }
