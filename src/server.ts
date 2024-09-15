@@ -34,9 +34,10 @@ export const io = new Server(server, {
 
 export const JWT_SECRET = process.env.JWT_SECRET ?? "default_secret";
 export const ADMIN_SECRET = process.env.ADMIN_SECRET;
-server.use(cors());
-server.use(["/doc", "/docs"], swaggerUi.serve, swaggerUi.setup(swaggerFile));
-server.use(logger);
+
+app.use(cors());
+app.use(["/doc", "/docs"], swaggerUi.serve, swaggerUi.setup(swaggerFile));
+app.use(logger);
 
 app.use(bodyParser.json());
 app.use(express.urlencoded({ extended: false }));
