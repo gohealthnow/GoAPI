@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { PrismaClient } from "@prisma/client";
-import { consultarCep } from "correios-brasil";
+import { CepResponse, consultarCep } from "correios-brasil";
 
 const prisma = new PrismaClient();
 
@@ -41,22 +41,30 @@ const pharmacyController = {
     return res.status(200).json({ pharmacy: pharmacy });
   },
   create: async (req: Request, res: Response) => {
-    const { name, cep: customerPostalCode, email, imageurl, phone } = req.body;
+    const {
+      name,
+      cep: customerPostalCode,
+      email,
+      imageurl,
+      phone,
+    } = req.body as {
+      name: string;
+      cep: string;
+      email: string;
+      imageurl: string;
+      phone: string;
+    };
 
     if (!name) return res.status(404).json({ message: "missing name field!" });
-    if (!customerPostalCode)
+    if (!customerPostalCode || ![8, 9].includes(customerPostalCode.length))
       return res.status(404).json({ message: "missing cep field!" });
     if (!email)
       return res.status(404).json({ message: "missing email field!" });
-    if (!phone)
+    if (!phone || ![10, 11].includes(phone.length))
       return res.status(404).json({ message: "missing phone field!" });
-    if (!imageurl)
-      return res.status(404).json({ message: "missing imageurl field!" });
 
-    const fetchedZipCodeDetails = await consultarCep(customerPostalCode).catch(
-      (error) => {
-        return res.status(404).json({ message: "Error getting cep", error });
-      }
+    const fetchedZipCodeDetails = await consultarCep(
+      customerPostalCode
     );
 
     if (!fetchedZipCodeDetails)
@@ -71,11 +79,10 @@ const pharmacyController = {
           phone: phone,
           geolocation: {
             create: {
-              address: `${fetchedZipCodeDetails.logradouro},${fetchedZipCodeDetails.complemento},${fetchedZipCodeDetails.bairro}`,
+              address: `${fetchedZipCodeDetails.logradouro}, ${fetchedZipCodeDetails.bairro}`,
               cep: fetchedZipCodeDetails.cep,
               city: fetchedZipCodeDetails.localidade,
-              country: "Brasil",
-              state: fetchedZipCodeDetails.uf,
+              additional: fetchedZipCodeDetails.complemento,
               latitude: 0.0,
               longitude: 0.0,
             },
