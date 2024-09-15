@@ -5,9 +5,11 @@ import ngrok from "@ngrok/ngrok";
 import cors from "cors";
 import express from "express";
 import bodyParser from "body-parser";
+import { createServer } from "node:http";
 import path from "path";
+import { Server } from "socket.io";
+import { pgClient } from "./utils/stream";
 
-const server = express();
 const HOST = process.env.HOST ?? "localhost";
 const PORT = (process.env.PORT as unknown as number) ?? 3000;
 
@@ -23,31 +25,30 @@ export const logger = PinoHttp({
   },
 });
 
-export const JWT_SECRET = process.env.JWT_SECRET ?? "default_secret";
-export const ADMIN_SECRET = process.env.ADMIN_SECRET;
-
-server.use((_req, res, next) => {
-  res.setHeader("ngrok-skip-browser-warning", "true");
-  next();
+const app = express();
+const server = createServer(app);
+export const io = new Server(server, {
+  cors: { origin: true },
+  connectionStateRecovery: {},
 });
 
+export const JWT_SECRET = process.env.JWT_SECRET ?? "default_secret";
+export const ADMIN_SECRET = process.env.ADMIN_SECRET;
 server.use(cors());
 server.use(["/doc", "/docs"], swaggerUi.serve, swaggerUi.setup(swaggerFile));
 server.use(logger);
 
-server.use(bodyParser.json());
-server.use(express.urlencoded({ extended: false }));
+app.use(bodyParser.json());
+app.use(express.urlencoded({ extended: false }));
 
-server.use(express.static("public"));
+app.use(express.static("public"));
 
-server.get("/", (req, res) => {
-  res.sendFile(path.join(__dirname, "public", "index.html"));
-});
+pgClient.connect();
 
-server.listen(PORT, async () => {
-  logger.logger.info(`Server running at http://${HOST}:${PORT}`);
-  logger.logger.info(`Swagger running at http://${HOST}:${PORT}/docs`);
-});
+app.set("view engine", "ejs");
+app.set("views", "./public");
+
+app.use("/", express.static(path.join(__dirname, "public")));
 
 ngrok
   .connect({ addr: PORT, authtoken_from_env: true })
@@ -55,4 +56,9 @@ ngrok
     logger.logger.info(`Ingress established at: ${listener.url()}`)
   );
 
-export default server;
+server.listen(PORT, () => {
+  logger.logger.info(`Server running at http://${HOST}:${PORT}`);
+  logger.logger.info(`Swagger running at http://${HOST}:${PORT}/docs`);
+});
+
+export default app;

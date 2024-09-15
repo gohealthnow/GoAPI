@@ -363,6 +363,146 @@
         }
       }
     },
+    "/product/update/{id}": {
+      "put": {
+        "tags": [
+          "Products"
+        ],
+        "description": "Endpoint para atualizar um produto por id.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Produto atualizado com sucesso.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Product"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/Product"
+                }
+              }
+            }
+          },
+          "204": {
+            "description": "No Content"
+          },
+          "404": {
+            "description": "Erro ao atualizar produto."
+          },
+          "500": {
+            "description": "Erro no servidor."
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "price": {
+                    "example": "any"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/product/update/stock/{productId}/{pharmacyId}": {
+      "put": {
+        "tags": [
+          "Products"
+        ],
+        "description": "Endpoint para atualizar o estoque de um produto.",
+        "parameters": [
+          {
+            "name": "productId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "ID do produto."
+          },
+          {
+            "name": "pharmacyId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "ID da farmácia."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Estoque atualizado com sucesso."
+          },
+          "404": {
+            "description": "Erro ao atualizar estoque."
+          },
+          "500": {
+            "description": "Erro no servidor."
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "quantity": {
+                    "example": "any"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/product/stock/{id}": {
+      "get": {
+        "tags": [
+          "Products"
+        ],
+        "description": "Endpoint para verificar se existe um novo produto no estoque.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Produto disponível para retirada."
+          },
+          "404": {
+            "description": "Produto não disponível."
+          },
+          "500": {
+            "description": "Erro no servidor."
+          }
+        }
+      }
+    },
     "/server": {
       "get": {
         "tags": [

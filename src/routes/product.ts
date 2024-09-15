@@ -143,4 +143,50 @@ productRouter.put("/update/:id", (req, res) => {
   ProductController.updatebyid(req, res);
 });
 
+productRouter.put("/update/stock/:productId/:pharmacyId", (req, res) => {
+  /* #swagger.tags = ['Products']
+      #swagger.path = '/product/update/stock/{productId}/{pharmacyId}'
+      #swagger.description = 'Endpoint para atualizar o estoque de um produto.'
+      #swagger.parameters['productId'] = {
+        in: 'path',
+        description: 'ID do produto.',
+        required: true,
+        type: 'string'
+      }
+      #swagger.parameters['pharmacyId'] = {
+        in: 'path',
+        description: 'ID da farmácia.',
+        required: true,
+        type: 'string'
+      }
+      #swagger.responses[200] = {
+        description: 'Estoque atualizado com sucesso.'
+      }
+      #swagger.responses[404] = {
+        description: 'Erro ao atualizar estoque.'
+      }
+      #swagger.responses[500] = {
+        description: 'Erro no servidor.'
+      }
+  */
+  ProductController.updateStock(req, res);
+});
+
+productRouter.get("/stock/:id", (req, res) => {
+  /* #swagger.tags = ['Products']
+      #swagger.path = '/product/stock/{id}'
+      #swagger.description = 'Endpoint para verificar se existe um novo produto no estoque.'
+      #swagger.responses[200] = {
+        description: 'Produto disponível para retirada.'
+      }
+      #swagger.responses[404] = {
+        description: 'Produto não disponível.'
+      }
+      #swagger.responses[500] = {
+        description: 'Erro no servidor.'
+      }
+  */
+  ProductController.stock(req, res);
+});
+
 export default productRouter;

@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="ngrok-skip-browser-warning" content="true">
+  <title>Document</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      margin-top: 100px;
+    }
+
+    h1 {
+      color: #333;
+    }
+
+    a {
+      color: #007bff;
+      text-decoration: none;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+
+    p {
+      color: #666;
+    }
+
+    .container {
+      max-width: 960px;
+      margin: 0 auto;
+    }
+
+    .row {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .col {
+      flex: 1;
+      margin: 10px;
+    }
+
+    .card {
+      background: #f8f9fa;
+      border-radius: 5px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      padding: 20px;
+      text-align: left;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <h1>API RESTful com Node.js</h1>
+    <p>Exemplo de API RESTful com Node.js</p>
+    <h2>Endpoints</h2>
+    <div class="row">
+      <div class="col">
+        <div class="card">
+          <h2>Usuários</h2>
+          <p>API para gerenciar usuários</p>
+          <a href="/users">Acessar</a>
+        </div>
+      </div>
+      <div class="col">
+        <div class="card">
+          <h2>Produtos</h2>
+          <p>API para gerenciar produtos</p>
+          <a href="/products">Acessar</a>
+        </div>
+      </div>
+      <h1>Documentação</h1>
+      <p>Documentação da API RESTful com Node.js</p>
+      <a href="/docs">Acessar</a>
+    </div>
+  </div>
+</body>
+
+</html>

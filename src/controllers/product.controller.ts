@@ -44,10 +44,19 @@ const ProductController = {
       .json({ products: newProduct, message: "Product created!" });
   },
   listAll: async (req: Request, res: Response) => {
-    const products = await prisma.product.findMany().catch((error) => {
-      logger.logger.error(error);
-      return res.status(404).json({ message: "Error listing products" });
-    });
+    const products = await prisma.product
+      .findMany({
+        include: {
+          user: true,
+          PharmacyProduct: true,
+          reviews: true,
+          categories: true,
+        },
+      })
+      .catch((error) => {
+        logger.logger.error(error);
+        return res.status(404).json({ message: "Error listing products" });
+      });
 
     if (!products)
       return res.status(404).json({ message: "No products found" });
@@ -73,7 +82,7 @@ const ProductController = {
       });
   },
   getbyid: async (req: Request, res: Response) => {
-      const { id } = req.params;
+    const { id } = req.params;
 
     if (!id) return res.status(404).json({ message: "missing id field!" });
 
@@ -112,11 +121,11 @@ const ProductController = {
   },
   updatebyid: async (req: Request, res: Response) => {
     const { id } = req.params;
-    const { name, price } = req.body;
+    const { price } = req.body;
 
     if (!id) return res.status(404).json({ message: "missing id field!" });
-    if (!name) return res.status(404).json({ message: "missing name field!" });
-    if (!price) return res.status(404).json({ message: "missing price field!" });
+    if (!price)
+      return res.status(404).json({ message: "missing price field!" });
 
     await prisma.product
       .update({
@@ -124,18 +133,108 @@ const ProductController = {
           id: Number(id),
         },
         data: {
-          name: name,
           price: price,
         },
       })
       .then(() => {
+        // emitir o evento de atualização no banco de dados
+        prisma.$executeRaw`notify_pharmacy_product_changes();`;
         return res.status(204).send();
       })
       .catch((error) => {
         logger.logger.error(error);
         return res.status(500).json({ message: { ...error } });
       });
-  }
+  },
+  stock: async (req: Request, res: Response) => {
+    const { id } = req.params as { id: string };
+
+    if (!id) return res.status(404).json({ message: "missing id field!" });
+
+    const user = await prisma.user.findUnique({
+      where: {
+        id: Number(id),
+      },
+    });
+
+    if (!user) return res.status(404).json({ message: "User not found" });
+
+    const products = await prisma.product.findMany({
+      where: {
+        user: {
+          some: {
+            id: Number(id),
+          },
+        },
+      },
+    });
+
+    logger.logger.info(products);
+
+    if (!products)
+      return res.status(404).json({ message: "No products found" });
+
+    // capturar os produtos que estão disponíveis para retirada
+
+    const pharmacytoProduct = await prisma.pharmacyProduct.findMany({
+      where: {
+        quantity: {
+          gt: 0,
+        },
+      },
+    });
+
+    if (!pharmacytoProduct)
+      return res.status(404).json({ message: "No products found" });
+
+    return res.status(200).json({ products: pharmacytoProduct });
+  },
+  updateStock: async (req: Request, res: Response) => {
+    const { productId, pharmacyId } = req.params as {
+      productId: string;
+      pharmacyId: string;
+    };
+    const { quantity } = req.body as { quantity: number };
+
+    logger.logger.info(req.body, req.params, req.query);
+
+    if (!productId)
+      return res.status(404).json({ message: "missing product field!" });
+    if (!pharmacyId)
+      return res.status(404).json({ message: "missing pharmacy field!" });
+    if (!quantity)
+      return res.status(404).json({ message: "missing quantity field!" });
+
+    const pharmacyProduct = await prisma.pharmacyProduct.findFirst({
+      where: {
+        pharmacyId: Number(pharmacyId),
+        productId: Number(productId),
+      },
+    });
+
+    if (!pharmacyProduct) {
+      await prisma.pharmacyProduct.create({
+        data: {
+          pharmacyId: Number(pharmacyId),
+          productId: Number(productId),
+          quantity: quantity,
+        },
+      });
+      return res.status(200).json({ message: "Stock updated" });
+    }
+
+    if (pharmacyProduct) {
+      await prisma.pharmacyProduct.update({
+        where: {
+          id: pharmacyProduct.id,
+        },
+        data: {
+          quantity: quantity,
+        },
+      });
+      return res.status(200).json({ message: "Stock updated" });
+    }
+  },
 };
 
 export default ProductController;
