@@ -22,19 +22,19 @@ model User {
 }
 
 model Product {
-  id          Int              @id @default(autoincrement())
-  name        String           @unique
+  id          Int        @id @default(autoincrement())
+  name        String     @unique
   description String?
   price       Float?
   image       String?
   weight      Float?
   dimensions  String?
   rating      Float?
-  createdAt   DateTime         @default(now())
-  updatedAt   DateTime         @updatedAt
-  categories  Category[]       @relation("CategoryToProduct")
-  reviews     Review[]         @relation("ProductToReview")
-  user        User[]           @relation("ProductToUser")
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+  categories  Category[] @relation("CategoryToProduct")
+  reviews     Review[]   @relation("ProductToReview")
+  user        User[]     @relation("ProductToUser")
 
   PharmacyProduct PharmacyProduct[]
 }
@@ -51,34 +51,33 @@ model Review {
 }
 
 model Pharmacy {
-  id          Int              @id @default(autoincrement())
+  id            Int @id @default(autoincrement())
   geolocationId Int
 
-  createdAt   DateTime         @default(now())
-  updatedAt   DateTime         @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   name        String
   description String?
   phone       String
   email       String
-  image       String
+  image       String?
 
-  geolocation geolocation      @relation(fields: [geolocationId], references: [id])
+  geolocation     geolocation       @relation(fields: [geolocationId], references: [id])
   PharmacyProduct PharmacyProduct[]
 }
 
 model geolocation {
-  id        Int        @id @default(autoincrement())
-  createdAt DateTime   @default(now())
-  updatedAt DateTime   @updatedAt
-  latitude  Float
-  longitude Float
-  address   String
-  cep       String
-  city      String
-  state     String
-  country   String
-  Pharmacy Pharmacy[]
+  id         Int        @id @default(autoincrement())
+  createdAt  DateTime   @default(now())
+  updatedAt  DateTime   @updatedAt
+  latitude   Float
+  longitude  Float
+  address    String
+  additional String
+  cep        String
+  city       String
+  Pharmacy   Pharmacy[]
 }
 
 model Category {
@@ -97,13 +96,13 @@ model Order {
 }
 
 model PharmacyProduct {
-  id         Int      @id @default(autoincrement())
+  id         Int @id @default(autoincrement())
   pharmacyId Int
   productId  Int
   quantity   Int
 
-  pharmacy   Pharmacy @relation(fields: [pharmacyId], references: [id])
-  product    Product  @relation(fields: [productId], references: [id])
+  pharmacy Pharmacy @relation(fields: [pharmacyId], references: [id])
+  product  Product  @relation(fields: [productId], references: [id])
 }
 
 enum Role {
