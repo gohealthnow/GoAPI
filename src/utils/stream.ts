@@ -9,13 +9,10 @@ const prisma = new PrismaClient();
 const pgClient = createSubscriber({ connectionString: process.env.DATABASE_URL_STRING })
 
 pgClient.notifications.on("quantity_change", async (msg) => {
-  console.log("Received notification in 'quantity_change':", msg)
-  if (msg.channel === "quantity_change") {
-    logger.logger.info("Evento de atualização recebido:", msg.payload);
+    logger.logger.info("Evento de atualização recebido:", {...msg});
 
     // Parse do payload recebido, assumindo que o payload é um JSON com pharmacyId e productId
-    const payload = JSON.parse(msg.payload!);
-    const { pharmacyId, productId, quantity } = payload;
+    const { pharmacyId, productId, quantity } = msg;
     
     // Encontrar o produto e o usuário relacionado
     const product = await prisma.product.findUnique({
@@ -27,26 +24,20 @@ pgClient.notifications.on("quantity_change", async (msg) => {
       // Para cada usuário associado ao produto, enviar uma notificação
       for (const user of product.user) {
         if (user.id) {
-          io.to(idUser.get(user.id)).emit("productAvailable", {
-            message: `O produto ${product.name} que você reservou está disponível para retirada na farmácia!`,
-            pharmacyId,
-            productId,
-            quantity,
-          });
-          logger.logger.info(
-            `Notificação enviada para o usuário: ${user.name}`
-          );
-        } else {
-          logger.logger.info(
-            `Usuário ${user.id} não está conectado via Socket.io`
-          );
+          const socketId = idUser.get(user.id);
+          if (socketId) {
+            io.to(socketId).emit("productAvailable", {
+              message: `O produto ${product.name} que você reservou está disponível para retirada na farmácia!`,
+              pharmacyId,
+              productId,
+              quantity,
+            });
+            logger.logger.info(`Notificação enviada para o usuário: ${user.name}, ${socketId}`);
+          } else {
+            logger.logger.info(`Usuário ${user.id} não está conectado via Socket.io`);
+          }
         }
       }
-    } else {
-      logger.logger.info(
-        `Produto ou usuário não encontrado para productId: ${productId}`
-      );
-    }
   }
 })
 
