@@ -196,8 +196,6 @@ const ProductController = {
     };
     const { quantity } = req.body as { quantity: number };
 
-    logger.logger.info(req.body, req.params, req.query);
-
     if (!productId)
       return res.status(404).json({ message: "missing product field!" });
     if (!pharmacyId)

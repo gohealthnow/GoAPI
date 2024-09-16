@@ -21,7 +21,7 @@ export const logger = PinoHttp({
       destination: 2,
       all: true,
       translateTime: true,
-    },
+    }
   },
 });
 
@@ -36,14 +36,12 @@ export const io = new Server(server, {
   },
 });
 
-io.on("connection", (socket) => {
-  logger.logger.info(`Usuário conectado: ${socket.id}`);
-  io.emit("userConnected", { id: socket.id });
+export let idUser: Map<number, any> = new Map();
 
-  // Listener para o evento "stock"
-  socket.on("stock", (data) => {
-    logger.logger.info(`Evento "stock" recebido com dados: ` + data);
-    // Aqui você pode adicionar a lógica para tratar o evento "stock"
+io.on("connection", (socket) => {
+  socket.on("id", (data: string) => {
+    logger.logger.info(`{USER: ${socket.id}, ID_AUTH: ${data}}`);
+    return idUser.set(parseInt(data), socket.id);
   });
 });
 
@@ -56,8 +54,6 @@ app.use(logger);
 
 app.use(bodyParser.json());
 app.use(express.urlencoded({ extended: false }));
-
-pgClient.connect();
 
 app.set("view engine", "ejs");
 app.set("views", "./public");

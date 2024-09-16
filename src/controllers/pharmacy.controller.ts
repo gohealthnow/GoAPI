@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { PrismaClient } from "@prisma/client";
-import { CepResponse, consultarCep } from "correios-brasil";
+import { consultarCep } from "correios-brasil";
 
 const prisma = new PrismaClient();
 
