@@ -6,7 +6,7 @@ import createSubscriber from "pg-listen"
 const prisma = new PrismaClient();
 
 // Accepts the same connection config object that the "pg" package would take
-const pgClient = createSubscriber({ connectionString: process.env.DATABASE_URL })
+const pgClient = createSubscriber({ connectionString: process.env.DATABASE_URL_STRING })
 
 pgClient.notifications.on("quantity_change", async (msg) => {
   console.log("Received notification in 'quantity_change':", msg)
