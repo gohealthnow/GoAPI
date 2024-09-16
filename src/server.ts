@@ -8,7 +8,7 @@ import bodyParser from "body-parser";
 import path from "path";
 import http from "http";
 import { Server } from "socket.io";
-import { connectWithRetry, pgClient } from "./utils/stream";
+import { connect } from "./utils/stream";
 
 const HOST = process.env.HOST ?? "localhost";
 const PORT = (process.env.PORT as unknown as number) ?? 3000;
@@ -76,12 +76,6 @@ server.on("error", (err) => {
   logger.logger.error("Erro no servidor:", err);
 });
 
-pgClient.on("error", (err: Error) => {
-  logger.logger.error("Erro no cliente do PostgreSQL: " + err);
-  if (err.stack === 'ECONNRESET' || err.message.includes('Connection terminated unexpectedly')) {
-    connectWithRetry();
-  }
-});
-
+connect();
 
 export default app;
