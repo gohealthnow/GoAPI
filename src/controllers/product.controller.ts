@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { PrismaClient } from "@prisma/client";
+import { Pharmacy, PharmacyProduct, PrismaClient } from "@prisma/client";
 import { logger } from "../server";
 const prisma = new PrismaClient();
 
@@ -106,15 +106,40 @@ const ProductController = {
     if (!name) return res.status(404).json({ message: "missing name field!" });
 
     const product = await prisma.product
-      .findUnique({
+      .findMany({
         where: {
           name: name,
         },
+        include: {
+          categories: true,
+          PharmacyProduct: true,
+          reviews: true,
+        }
       })
       .catch((error) => {
         logger.logger.error(error);
-        return res.status(404).json({ message: "Error finding product" });
+        return null;
       });
+
+    if (!product) return res.status(404).json({ message: "Error finding product" });
+
+      let pharmacyitems: Pharmacy[];
+
+    product.forEach((productItem) => {
+      productItem.PharmacyProduct.forEach((pharmacyitem) => {
+        prisma.pharmacy
+          .findMany({
+            where: {
+              id: pharmacyitem.pharmacyId,
+            },
+          })
+          .then((pharmacies) => {
+            pharmacies.forEach((pharmacy) => {
+              pharmacyitems.push(pharmacy);
+            });
+          });
+      });
+    });
 
     if (!product) return res.status(404).json({ message: "Product not found" });
     return res.status(200).json({ product: product });
