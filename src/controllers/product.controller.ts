@@ -108,41 +108,40 @@ const ProductController = {
     const product = await prisma.product
       .findMany({
         where: {
-          name: name,
+          name: {
+            contains: name,
+          },
         },
         include: {
           categories: true,
           PharmacyProduct: true,
           reviews: true,
-        }
+        },
       })
       .catch((error) => {
         logger.logger.error(error);
         return null;
       });
 
-    if (!product) return res.status(404).json({ message: "Error finding product" });
+    if (!product)
+      return res.status(404).json({ message: "Error finding product" });
 
-      let pharmacyitems: Pharmacy[];
+    // capturar as farmacias que estão associados no products encontrado no pharmacyProduct
+    const productIds = product.map((p) => p.id);
 
-    product.forEach((productItem) => {
-      productItem.PharmacyProduct.forEach((pharmacyitem) => {
-        prisma.pharmacy
-          .findMany({
-            where: {
-              id: pharmacyitem.pharmacyId,
-            },
-          })
-          .then((pharmacies) => {
-            pharmacies.forEach((pharmacy) => {
-              pharmacyitems.push(pharmacy);
-            });
-          });
-      });
+    const pharmacies = await prisma.pharmacyProduct.findMany({
+      where: {
+        productId: {
+          in: productIds,
+        },
+      },
+      include: {
+        pharmacy: true,
+      },
     });
 
-    if (!product) return res.status(404).json({ message: "Product not found" });
-    return res.status(200).json({ product: product });
+    return res.status(200).json({ product: product, pharmacies: pharmacies });
+
   },
   updatebyid: async (req: Request, res: Response) => {
     const { id } = req.params;
@@ -227,6 +226,26 @@ const ProductController = {
       return res.status(404).json({ message: "missing pharmacy field!" });
     if (!quantity)
       return res.status(404).json({ message: "missing quantity field!" });
+
+    if(quantity < 0) return res.status(404).json({ message: "Quantity must be greater than 0" });
+
+    const productexisted = await prisma.product.findUnique({
+      where: {
+        id: Number(productId),
+      },
+    });
+
+    if (!productexisted)
+      return res.status(404).json({ message: "Product not found" });
+
+    const pharmacyexisted = await prisma.pharmacy.findUnique({
+      where: {
+        id: Number(pharmacyId),
+      },
+    });
+
+    if (!pharmacyexisted)
+      return res.status(404).json({ message: "Pharmacy not found" });
 
     const pharmacyProduct = await prisma.pharmacyProduct.findFirst({
       where: {
