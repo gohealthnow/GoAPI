@@ -88,6 +88,9 @@ const pharmacyController = {
             },
           },
         },
+        include: {
+          geolocation: true,
+        },
       })
       .catch((error) => {
         return res.status(404).json({ message: "Error creating pharmacy" });
