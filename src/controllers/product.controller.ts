@@ -109,12 +109,12 @@ const ProductController = {
       .findMany({
         where: {
           name: {
-            contains: name,
+            contains: name
           },
         },
         include: {
           categories: true,
-          PharmacyProduct: true,
+          PharmacyProduct: true,    
           reviews: true,
         },
       })
@@ -126,7 +126,6 @@ const ProductController = {
     if (!product)
       return res.status(404).json({ message: "Error finding product" });
 
-    // capturar as farmacias que estão associados no products encontrado no pharmacyProduct
     const productIds = product.map((p) => p.id);
 
     const pharmacies = await prisma.pharmacyProduct.findMany({
