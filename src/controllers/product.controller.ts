@@ -15,6 +15,13 @@ const ProductController = {
         where: {
           name: name,
         },
+        include: {
+          categories: true,
+          PharmacyProduct: true,
+          reviews: true,
+          user: true,
+          _count: true
+        }
       })
       .then((product) => {
         logger.logger.info(product);
@@ -30,6 +37,13 @@ const ProductController = {
           name: name,
           price: price,
         },
+        include: {
+          categories: true,
+          PharmacyProduct: true,
+          reviews: true,
+          user: true,
+          _count: true
+        }
       })
       .then((product) => {
         return product;
@@ -51,6 +65,7 @@ const ProductController = {
           PharmacyProduct: true,
           reviews: true,
           categories: true,
+          _count: true
         },
       })
       .catch((error) => {
@@ -91,6 +106,13 @@ const ProductController = {
         where: {
           id: Number(id),
         },
+        include: {
+          _count: true,
+          categories: true,
+          PharmacyProduct: true,
+          reviews: true,
+          user: true
+        }
       })
       .catch((error) => {
         logger.logger.error(error);
@@ -116,6 +138,8 @@ const ProductController = {
           categories: true,
           PharmacyProduct: true,    
           reviews: true,
+          _count: true,
+          user: true
         },
       })
       .catch((error) => {
@@ -136,6 +160,7 @@ const ProductController = {
       },
       include: {
         pharmacy: true,
+        product: true,
       },
     });
 
@@ -158,6 +183,13 @@ const ProductController = {
         data: {
           price: price,
         },
+        include: {
+          _count: true,
+          categories: true,
+          PharmacyProduct: true,
+          reviews: true,
+          user: true
+        }
       })
       .then(() => {
         // emitir o evento de atualização no banco de dados
@@ -178,6 +210,11 @@ const ProductController = {
       where: {
         id: Number(id),
       },
+      include: {
+        Product: true,
+        _count: true,
+        Review: true,
+      }
     });
 
     if (!user) return res.status(404).json({ message: "User not found" });
@@ -189,6 +226,13 @@ const ProductController = {
             id: Number(id),
           },
         },
+      },
+      include: {
+        categories: true,
+        PharmacyProduct: true,
+        reviews: true,
+        _count: true,
+        user: true
       },
     });
 
