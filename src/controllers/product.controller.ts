@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { Pharmacy, PharmacyProduct, PrismaClient } from "@prisma/client";
+import { PrismaClient } from "@prisma/client";
 import { logger } from "../server";
 import { capitalize } from "../utils/filled";
 const prisma = new PrismaClient();
@@ -80,7 +80,7 @@ const ProductController = {
   },
   delete: async (req: Request, res: Response) => {
     const { id } = req.params;
-
+    
     if (!id) return res.status(404).json({ message: "missing id field!" });
 
     await prisma.product
