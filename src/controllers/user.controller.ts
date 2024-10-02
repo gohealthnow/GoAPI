@@ -253,7 +253,7 @@ const userController = {
     return res.status(401).json({ message: "Invalid username or password" });
   },
   getUserById: async (req: Request, res: Response) => {
-      const { id } = req.params;
+    const { id } = req.params;
 
     if (!id) {
       return res.status(400).json({ message: "Missing id field" });
@@ -351,7 +351,7 @@ const userController = {
       });
   },
   buy: async (req: Request, res: Response) => {
-    const { id, prodid,pharid,quantity} = req.body as {
+    const { id, prodid, pharid, quantity } = req.body as {
       id: string;
       prodid: string;
       pharid: string;
@@ -362,7 +362,7 @@ const userController = {
       return res.status(400).json({ message: "Missing id field" });
     }
 
-    if(!pharid) {
+    if (!pharid) {
       return res.status(400).json({ message: "Missing pharid field" });
     }
 
@@ -404,31 +404,49 @@ const userController = {
       return res.status(404).json({ message: "Product not found" });
     }
 
-    const order = await prisma.order.create({
-      data: {
-        user: {
-          connect: {
-            id: Number(id),
+    const order = await prisma.order
+      .create({
+        data: {
+          user: {
+            connect: {
+              id: Number(id),
+            },
           },
-        },
-        product: {
-          connect: {
-            id: Number(prodid),
+          product: {
+            connect: {
+              id: Number(prodid),
+            },
           },
+          quantity: quantity,
         },
-        quantity: quantity,
-      },
-    }).catch((error) => {
-      logger.logger.error(error.message);
-      return res.status(500).json({ message: error.message });
-    });
+      })
+      .catch((error) => {
+        return res.status(500).json({ message: error.message });
+      });
 
-    if(!order) {
+    if (!order) {
       return res.status(500).json({ message: "Order not created" });
     }
 
-    return res.status(201).json({ message: "Order created", order: order });
-  }
+    await prisma.pharmacyProduct
+      .updateMany({
+        where: {
+          pharmacyId: Number(prodid),
+          productId: Number(pharid),
+        },
+        data: {
+          quantity: {
+            decrement: quantity,
+          },
+        },
+      })
+      .catch((error) => {
+        return res.status(500).json({ message: error.message });
+      })
+      .then(() => {
+        return res.status(204).send();
+      });
+  },
 };
 
 export default userController;
