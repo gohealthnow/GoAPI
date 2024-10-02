@@ -351,14 +351,19 @@ const userController = {
       });
   },
   buy: async (req: Request, res: Response) => {
-    const { id, prodid, quantity} = req.body as {
+    const { id, prodid,pharid,quantity} = req.body as {
       id: string;
       prodid: string;
+      pharid: string;
       quantity: number;
     };
 
     if (!id) {
       return res.status(400).json({ message: "Missing id field" });
+    }
+
+    if(!pharid) {
+      return res.status(400).json({ message: "Missing pharid field" });
     }
 
     if (!prodid) {
@@ -399,7 +404,7 @@ const userController = {
       return res.status(404).json({ message: "Product not found" });
     }
 
-    await prisma.order.create({
+    const order = await prisma.order.create({
       data: {
         user: {
           connect: {
@@ -413,7 +418,16 @@ const userController = {
         },
         quantity: quantity,
       },
-    })
+    }).catch((error) => {
+      logger.logger.error(error.message);
+      return res.status(500).json({ message: error.message });
+    });
+
+    if(!order) {
+      return res.status(500).json({ message: "Order not created" });
+    }
+
+    return res.status(201).json({ message: "Order created", order: order });
   }
 };
 
