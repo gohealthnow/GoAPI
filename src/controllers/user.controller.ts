@@ -350,6 +350,71 @@ const userController = {
         return res.status(500).json({ message: error.message });
       });
   },
+  buy: async (req: Request, res: Response) => {
+    const { id, prodid, quantity} = req.body as {
+      id: string;
+      prodid: string;
+      quantity: number;
+    };
+
+    if (!id) {
+      return res.status(400).json({ message: "Missing id field" });
+    }
+
+    if (!prodid) {
+      return res.status(400).json({ message: "Missing prodid field" });
+    }
+
+    if (!quantity) {
+      return res.status(400).json({ message: "Missing quantity field" });
+    }
+
+    const user = await prisma.user
+      .findUnique({
+        where: {
+          id: Number(id),
+        },
+      })
+      .catch((error) => {
+        logger.logger.error(error.message);
+        return res.status(500).json({ message: error.message });
+      });
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    const productExists = await prisma.product
+      .findUnique({
+        where: {
+          id: Number(prodid),
+        },
+      })
+      .catch((error) => {
+        logger.logger.error(error.message);
+        return res.status(500).json({ message: error.message });
+      });
+
+    if (!productExists) {
+      return res.status(404).json({ message: "Product not found" });
+    }
+
+    await prisma.order.create({
+      data: {
+        user: {
+          connect: {
+            id: Number(id),
+          },
+        },
+        product: {
+          connect: {
+            id: Number(prodid),
+          },
+        },
+        quantity: quantity,
+      },
+    })
+  }
 };
 
 export default userController;
