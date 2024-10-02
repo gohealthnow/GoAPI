@@ -21,7 +21,6 @@ const ProductController = {
           PharmacyProduct: true,
           reviews: true,
           user: true,
-          _count: true,
         },
       })
       .then((product) => {
@@ -43,7 +42,6 @@ const ProductController = {
           PharmacyProduct: true,
           reviews: true,
           user: true,
-          _count: true,
         },
       })
       .then((product) => {
@@ -59,20 +57,15 @@ const ProductController = {
       .json({ products: newProduct, message: "Product created!" });
   },
   listAll: async (req: Request, res: Response) => {
-    const products = await prisma.product
-      .findMany({
-        include: {
-          user: true,
-          PharmacyProduct: true,
-          reviews: true,
-          categories: true,
-          _count: true,
-        },
-      })
-      .catch((error) => {
-        logger.logger.error(error);
-        return res.status(404).json({ message: "Error listing products" });
-      });
+    const products = await prisma.product.findMany({
+      include: {
+        categories: true,
+        PharmacyProduct: true,
+        reviews: true,
+        user: true,
+        Order: true,
+      },
+    });
 
     if (!products)
       return res.status(404).json({ message: "No products found" });
@@ -80,7 +73,7 @@ const ProductController = {
   },
   delete: async (req: Request, res: Response) => {
     const { id } = req.params;
-    
+
     if (!id) return res.status(404).json({ message: "missing id field!" });
 
     await prisma.product
@@ -108,7 +101,6 @@ const ProductController = {
           id: Number(id),
         },
         include: {
-          _count: true,
           categories: true,
           PharmacyProduct: true,
           reviews: true,
@@ -137,9 +129,8 @@ const ProductController = {
         },
         include: {
           categories: true,
-          PharmacyProduct: true,   
+          PharmacyProduct: true,
           reviews: true,
-          _count: true,
           user: true,
         },
       })
@@ -184,7 +175,6 @@ const ProductController = {
           price: price,
         },
         include: {
-          _count: true,
           categories: true,
           PharmacyProduct: true,
           reviews: true,
@@ -212,7 +202,6 @@ const ProductController = {
       },
       include: {
         Product: true,
-        _count: true,
         Review: true,
       },
     });
@@ -231,7 +220,6 @@ const ProductController = {
         categories: true,
         PharmacyProduct: true,
         reviews: true,
-        _count: true,
         user: true,
       },
     });
