@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import { Pharmacy, PharmacyProduct, PrismaClient } from "@prisma/client";
 import { logger } from "../server";
+import { capitalize } from "../utils/filled";
 const prisma = new PrismaClient();
 
 const ProductController = {
@@ -13,15 +14,15 @@ const ProductController = {
     const productexisted = await prisma.product
       .findMany({
         where: {
-          name: name,
+          name: capitalize(name),
         },
         include: {
           categories: true,
           PharmacyProduct: true,
           reviews: true,
           user: true,
-          _count: true
-        }
+          _count: true,
+        },
       })
       .then((product) => {
         logger.logger.info(product);
@@ -42,8 +43,8 @@ const ProductController = {
           PharmacyProduct: true,
           reviews: true,
           user: true,
-          _count: true
-        }
+          _count: true,
+        },
       })
       .then((product) => {
         return product;
@@ -65,7 +66,7 @@ const ProductController = {
           PharmacyProduct: true,
           reviews: true,
           categories: true,
-          _count: true
+          _count: true,
         },
       })
       .catch((error) => {
@@ -111,8 +112,8 @@ const ProductController = {
           categories: true,
           PharmacyProduct: true,
           reviews: true,
-          user: true
-        }
+          user: true,
+        },
       })
       .catch((error) => {
         logger.logger.error(error);
@@ -131,7 +132,7 @@ const ProductController = {
       .findMany({
         where: {
           name: {
-            contains: name
+            contains: capitalize(name),
           },
         },
         include: {
@@ -139,7 +140,7 @@ const ProductController = {
           PharmacyProduct: true,   
           reviews: true,
           _count: true,
-          user: true
+          user: true,
         },
       })
       .catch((error) => {
@@ -165,7 +166,6 @@ const ProductController = {
     });
 
     return res.status(200).json({ product: product, pharmacies: pharmacies });
-
   },
   updatebyid: async (req: Request, res: Response) => {
     const { id } = req.params;
@@ -188,8 +188,8 @@ const ProductController = {
           categories: true,
           PharmacyProduct: true,
           reviews: true,
-          user: true
-        }
+          user: true,
+        },
       })
       .then(() => {
         // emitir o evento de atualização no banco de dados
@@ -214,7 +214,7 @@ const ProductController = {
         Product: true,
         _count: true,
         Review: true,
-      }
+      },
     });
 
     if (!user) return res.status(404).json({ message: "User not found" });
@@ -232,7 +232,7 @@ const ProductController = {
         PharmacyProduct: true,
         reviews: true,
         _count: true,
-        user: true
+        user: true,
       },
     });
 
@@ -270,7 +270,10 @@ const ProductController = {
     if (!quantity)
       return res.status(404).json({ message: "missing quantity field!" });
 
-    if(quantity < 0) return res.status(404).json({ message: "Quantity must be greater than 0" });
+    if (quantity < 0)
+      return res
+        .status(404)
+        .json({ message: "Quantity must be greater than 0" });
 
     const productexisted = await prisma.product.findUnique({
       where: {

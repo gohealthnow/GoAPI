@@ -12,3 +12,8 @@ export function getRouteFilePaths(): string[] {
     .map((file: string) => path.join(routesFolderPath, file));
   return filePaths;
 }
+
+export function capitalize(str: string): string {
+  if (str.length === 0) return str;
+  return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
+}
