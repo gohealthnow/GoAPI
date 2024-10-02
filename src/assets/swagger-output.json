@@ -1013,6 +1013,78 @@
           }
         }
       }
+    },
+    "/user/product/buy": {
+      "post": {
+        "tags": [
+          "User"
+        ],
+        "description": "Endpoint para realizar a compra de um produto.",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "description": "Product Information",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "number",
+                  "example": 1
+                },
+                "prodid": {
+                  "type": "number",
+                  "example": 6
+                },
+                "quantity": {
+                  "type": "number",
+                  "example": 1
+                }
+              },
+              "required": [
+                "id",
+                "prodid",
+                "quantity"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Produto comprado com sucesso."
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Erro no servidor."
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "example": "any"
+                  },
+                  "prodid": {
+                    "example": "any"
+                  },
+                  "quantity": {
+                    "example": "any"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
