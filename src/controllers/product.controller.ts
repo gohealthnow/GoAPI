@@ -136,7 +136,7 @@ const ProductController = {
         },
         include: {
           categories: true,
-          PharmacyProduct: true,    
+          PharmacyProduct: true,   
           reviews: true,
           _count: true,
           user: true
