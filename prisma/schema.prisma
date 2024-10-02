@@ -19,6 +19,8 @@ model User {
   role      Role      @default(USER)
   Product   Product[] @relation("ProductToUser")
   Review    Review[]  @relation("ReviewToUser")
+  
+  Order Order[]
 }
 
 model Product {
@@ -37,6 +39,8 @@ model Product {
   user        User[]     @relation("ProductToUser")
 
   PharmacyProduct PharmacyProduct[]
+
+  Order Order[]
 }
 
 model Review {
@@ -88,11 +92,16 @@ model Category {
 
 model Order {
   id        String   @id @default(uuid())
-  userId    String
-  productId String
+  userId    Int
+  productId Int
+
   quantity  Int
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  product Product @relation(fields: [productId], references: [id])
+  user    User    @relation(fields: [userId], references: [id])
 }
 
 model PharmacyProduct {
