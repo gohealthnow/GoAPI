@@ -36,7 +36,7 @@ export const io = new Server(server, {
   },
 });
 
-export let idUser: Map<number, any> = new Map();
+export const idUser: Map<number, any> = new Map();
 
 io.on("connection", (socket) => {
   socket.on("id", (data: string) => {

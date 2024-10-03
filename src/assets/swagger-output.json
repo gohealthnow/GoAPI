@@ -479,6 +479,45 @@
         }
       }
     },
+    "/stock/{pharmacy}/{product}": {
+      "get": {
+        "tags": [
+          "Stock"
+        ],
+        "description": "Endpoint para obter a quantidade disponível de um produto em uma farmácia.",
+        "parameters": [
+          {
+            "name": "pharmacy",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Pharmacy ID."
+          },
+          {
+            "name": "product",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Product ID."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Quantidade disponível obtida com sucesso."
+          },
+          "404": {
+            "description": "Produto não encontrado."
+          },
+          "500": {
+            "description": "Erro no servidor."
+          }
+        }
+      }
+    },
     "/user/": {
       "get": {
         "tags": [

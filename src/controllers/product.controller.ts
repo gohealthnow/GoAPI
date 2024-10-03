@@ -106,10 +106,6 @@ const ProductController = {
           reviews: true,
           user: true,
         },
-      })
-      .catch((error) => {
-        logger.logger.error(error);
-        return res.status(404).json({ message: "Error finding product" });
       });
 
     if (!product) return res.status(404).json({ message: "Product not found" });

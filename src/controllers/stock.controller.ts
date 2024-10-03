@@ -4,24 +4,22 @@ const prisma = new PrismaClient();
 
 export const stockerController = {
   getAvailableQuantity: async (req: Request, res: Response) => {
-    const { productId, pharmacyId } = req.params;
-    const availableQuantity = await prisma.pharmacyProduct
-      .findUnique({
+    const { pharmacy, product } = req.params;
+    let availableQuantity;
+    try {
+      availableQuantity = await prisma.pharmacyProduct.findUnique({
         where: {
           pharmacyId_productId: {
-            pharmacyId: parseInt(pharmacyId),
-            productId: parseInt(productId),
+            pharmacyId: parseInt(pharmacy),
+            productId: parseInt(product),
           },
         },
-        select: {
-          quantity: true,
-        },
-      })
-      .catch((error) => {
-        return res.status(500).json({ message: "Internal Server Error" });
       });
+    } catch (error) {
+      return res.status(500).json({ message: "Internal Server Error" });
+    }
 
-    if (!availableQuantity) {
+    if (!availableQuantity || availableQuantity.quantity === 0) {
       return res.status(404).json({ message: "Product not found" });
     }
 

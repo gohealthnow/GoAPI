@@ -1,4 +1,3 @@
-import { Client } from "pg";
 import { idUser, io, logger } from "../server";
 import { PrismaClient } from "@prisma/client";
 import createSubscriber from "pg-listen"

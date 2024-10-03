@@ -429,10 +429,12 @@ const userController = {
     }
 
     await prisma.pharmacyProduct
-      .updateMany({
+      .update({
         where: {
-          pharmacyId: Number(prodid),
-          productId: Number(pharid),
+          pharmacyId_productId: {
+            pharmacyId: Number(pharid),
+            productId: Number(prodid),
+          },
         },
         data: {
           quantity: {
@@ -442,10 +444,9 @@ const userController = {
       })
       .catch((error) => {
         return res.status(500).json({ message: error.message });
-      })
-      .then(() => {
-        return res.status(204).send();
       });
+
+    return res.status(200).json({ message: "Order created" });
   },
 };
 
