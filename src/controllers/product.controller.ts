@@ -302,7 +302,10 @@ const ProductController = {
     if (pharmacyProduct) {
       await prisma.pharmacyProduct.update({
         where: {
-          id: pharmacyProduct.id,
+          pharmacyId_productId: {
+            pharmacyId: Number(pharmacyId),
+            productId: Number(productId),
+          },
         },
         data: {
           quantity: quantity,

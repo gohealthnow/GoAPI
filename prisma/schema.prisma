@@ -19,7 +19,7 @@ model User {
   role      Role      @default(USER)
   Product   Product[] @relation("ProductToUser")
   Review    Review[]  @relation("ReviewToUser")
-  
+
   Order Order[]
 }
 
@@ -91,11 +91,11 @@ model Category {
 }
 
 model Order {
-  id        String   @id @default(uuid())
+  id        String @id @default(uuid())
   userId    Int
   productId Int
 
-  quantity  Int
+  quantity Int
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -105,13 +105,14 @@ model Order {
 }
 
 model PharmacyProduct {
-  id         Int @id @default(autoincrement())
   pharmacyId Int
   productId  Int
   quantity   Int
 
   pharmacy Pharmacy @relation(fields: [pharmacyId], references: [id])
   product  Product  @relation(fields: [productId], references: [id])
+
+  @@id([pharmacyId, productId])
 }
 
 enum Role {
