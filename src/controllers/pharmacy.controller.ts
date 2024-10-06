@@ -68,7 +68,7 @@ const pharmacyController = {
     );
 
     if (!fetchedZipCodeDetails)
-      return res.status(404).json({ message: "No cep found" });
+      return res.status(406).json({ message: "No cep found" });
 
     const pharmacy = await prisma.pharmacy
       .create({
@@ -93,7 +93,7 @@ const pharmacyController = {
         },
       })
       .catch((error) => {
-        return res.status(404).json({ message: "Error creating pharmacy" });
+        return res.status(409).json({ message: "Error creating pharmacy" });
       });
 
     return res.status(201).json({ pharmacy: pharmacy });

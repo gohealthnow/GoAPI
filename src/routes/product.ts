@@ -122,6 +122,7 @@ productRouter.put("/update/:id", (req, res) => {
         schema: {
             $name: "Product Name",
             $price: 100.00,
+            $promotion: true,
             $stock: 10,
           },
         }

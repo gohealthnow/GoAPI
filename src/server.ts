@@ -9,16 +9,18 @@ import path from "path";
 import http from "http";
 import { Server } from "socket.io";
 import { connect } from "./utils/stream";
+import pino from "pino";
 
 const HOST = process.env.HOST ?? "localhost";
 const PORT = (process.env.PORT as unknown as number) ?? 3000;
 
 export const logger = PinoHttp({
+  messageKey: "message",
   transport: {
     level: "debug",
     target: "pino-pretty",
     options: {
-      destination: 2,
+      destination: 1,
       all: true,
       translateTime: true,
     }
@@ -43,6 +45,10 @@ io.on("connection", (socket) => {
     logger.logger.info(`{USER: ${socket.id}, ID_AUTH: ${data}}`);
     return idUser.set(parseInt(data), socket.id);
   });
+});
+
+io.on("disconnect", (socket) => {
+  logger.logger.info(`{USER: ${socket.id}} disconnected`);
 });
 
 export const JWT_SECRET = process.env.JWT_SECRET ?? "default_secret";

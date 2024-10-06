@@ -36,6 +36,7 @@ const ProductController = {
         data: {
           name: name,
           price: price,
+          promotion: false
         },
         include: {
           categories: true,
@@ -155,20 +156,21 @@ const ProductController = {
     return res.status(200).json({ product: product, pharmacies: pharmacies });
   },
   updatebyid: async (req: Request, res: Response) => {
-    const { id } = req.params;
-    const { price } = req.body;
+    const { id: productId } = req.params;
+    const { price, promotion } = req.body;
 
-    if (!id) return res.status(404).json({ message: "missing id field!" });
+    if (!productId) return res.status(404).json({ message: "missing id field!" });
     if (!price)
       return res.status(404).json({ message: "missing price field!" });
 
     await prisma.product
       .update({
         where: {
-          id: Number(id),
+          id: Number(productId),
         },
         data: {
           price: price,
+          promotion: promotion
         },
         include: {
           categories: true,
@@ -245,6 +247,8 @@ const ProductController = {
       productId: string;
       pharmacyId: string;
     };
+    console.log(req.body, req.params);
+    
     const { quantity } = req.body as { quantity: number };
 
     if (!productId)

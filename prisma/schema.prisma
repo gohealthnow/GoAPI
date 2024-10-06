@@ -32,6 +32,7 @@ model Product {
   weight      Float?
   dimensions  String?
   rating      Float?
+  promotion   Boolean
   createdAt   DateTime   @default(now())
   updatedAt   DateTime   @updatedAt
   categories  Category[] @relation("CategoryToProduct")

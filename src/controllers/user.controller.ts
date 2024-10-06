@@ -268,14 +268,11 @@ const userController = {
           Product: true,
           Review: true,
         },
-      })
-      .catch((error) => {
-        logger.logger.error(error.message);
-        return error;
-      })
-      .then((user) => {
-        return user;
       });
+
+    if (!user) {
+      return res.json({message:"User not found"}).status(400);
+    }
 
     const { password, ...userWithoutPassword } = user;
 

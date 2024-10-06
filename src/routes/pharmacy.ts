@@ -41,34 +41,23 @@ pharmacyRouter.get("/", (req, res) => {
 
 pharmacyRouter.post("/create", (req, res) => {
   /* #swagger.tags = ['Pharmacy']
-        #swagger.path = '/pharmacy/create'
-        #swagger.description = 'Endpoint para criar uma farmácia.'
-        #swagger.parameters['Pharmacy'] = {
-            in: 'body',
-            description: 'Pharmacy information.',
-            required: true,
-            schema: {
-                $name: "Pharmacy Name",
-                $address: "Pharmacy Address",
-                $email: "Pharmacy Email",
-            },
-        }
-        #swagger.responses[201] = {
-            description: 'Farmácia criada com sucesso.'
-        }
-        #swagger.responses[400] = {
-            description: 'Campos obrigatórios não preenchidos.'
-        }
-        #swagger.responses[404] = {
-            description: 'Erro ao criar farmácia.'
-        }
-        #swagger.responses[409] = {
-            description: 'Farmácia já existe.'
-        }
-        #swagger.responses[500] = {
-            description: 'Erro no servidor.'
-        }
-    */
+            #swagger.path = '/pharmacy/create'
+            #swagger.description = 'Endpoint para criar uma farmácia.'
+            #swagger.parameters['name'] = { description: 'Pharmacy name.', required: true }
+            #swagger.parameters['cep'] = { description: 'Pharmacy postal code.', required: true }
+            #swagger.parameters['email'] = { description: 'Pharmacy email.', required: true }
+            #swagger.parameters['imageurl'] = { description: 'Pharmacy image url.', required: true }
+            #swagger.parameters['phone'] = { description: 'Pharmacy phone.', required: true }
+            #swagger.responses[200] = {
+                description: 'Farmácia criada com sucesso.'
+            }
+            #swagger.responses[404] = {
+                description: 'Erro ao criar farmácia.'
+            }
+            #swagger.responses[500] = {
+                description: 'Erro no servidor.'
+            }
+        */
   pharmacyController.create(req, res);
 });
 
