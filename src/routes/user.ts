@@ -212,6 +212,56 @@ userRouter.post("/product/buy", async (req, res) => {
   userController.buy(req, res);
 })
 
+userRouter.post("/order", async (req, res) => {
+  /* #swagger.tags = ['User']
+      #swagger.path = '/user/order'
+      #swagger.description = 'Endpoint para listar as compras do usuário.'
+      #swagger.parameters['body'] = {
+        in: 'body',
+        description: 'User Information',
+        required: true,
+        schema: {
+            $id: 1,
+            }
+        },
+      #swagger.responses[200] = {
+        description: 'Compras listadas com sucesso.',
+        schema: {
+          $ref: '#/definitions/Order'
+        }
+      }
+      #swagger.responses[500] = {
+        description: 'Erro no servidor.'
+      }
+  */
+  userController.getOrders(req, res);
+});
+
+userRouter.post("/review", async (req, res) => {
+  /* #swagger.tags = ['User']
+      #swagger.path = '/user/review'
+      #swagger.description = 'Endpoint para realizar uma avaliação.'
+      #swagger.parameters['body'] = {
+        in: 'body',
+        description: 'Review Information',
+        required: true,
+        schema: {
+            $id: 1,
+            $prodid: 6,
+            $rating: 5,
+            $comment: 'Muito bom!',
+          },
+      }
+      #swagger.responses[204] = {
+        description: 'Avaliação realizada com sucesso.'
+      }
+      #swagger.responses[500] = {
+        description: 'Erro no servidor.'
+      }
+  */
+  userController.createReview(req, res);
+})
+
 export default userRouter;
 
 // Produtos para add: Alpazolan, Oxicodona, Dipirona
