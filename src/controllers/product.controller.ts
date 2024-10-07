@@ -160,33 +160,41 @@ const ProductController = {
     const { price, promotion } = req.body;
 
     if (!productId) return res.status(404).json({ message: "missing id field!" });
-    if (!price)
-      return res.status(404).json({ message: "missing price field!" });
+
+    const existingProduct = await prisma.product.findUnique({
+      where: {
+      id: Number(productId),
+      },
+    });
+
+    if (!existingProduct) {
+      return res.status(404).json({ message: "Product not found" });
+    }
 
     await prisma.product
       .update({
-        where: {
-          id: Number(productId),
-        },
-        data: {
-          price: price,
-          promotion: promotion
-        },
-        include: {
-          categories: true,
-          PharmacyProduct: true,
-          reviews: true,
-          user: true,
-        },
+      where: {
+        id: Number(productId),
+      },
+      data: {
+        price: price !== undefined ? price : existingProduct.price,
+        promotion: promotion !== undefined ? promotion : existingProduct.promotion,
+      },
+      include: {
+        categories: true,
+        PharmacyProduct: true,
+        reviews: true,
+        user: true,
+      },
       })
       .then(() => {
-        // emitir o evento de atualização no banco de dados
-        prisma.$executeRaw`notify_pharmacy_product_changes();`;
-        return res.status(204).send();
+      // emitir o evento de atualização no banco de dados
+      prisma.$executeRaw`notify_pharmacy_product_changes();`;
+      return res.status(204).send();
       })
       .catch((error) => {
-        logger.logger.error(error);
-        return res.status(500).json({ message: { ...error } });
+      logger.logger.error(error);
+      return res.status(500).json({ message: { ...error } });
       });
   },
   stock: async (req: Request, res: Response) => {
