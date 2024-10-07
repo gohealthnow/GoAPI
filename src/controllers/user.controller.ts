@@ -3,6 +3,8 @@ import { PrismaClient, Role } from "@prisma/client";
 import jwt, { JwtPayload } from "jsonwebtoken";
 import { ADMIN_SECRET, JWT_SECRET, logger } from "../server";
 import { regExpEmail } from "../middlewares/checkin";
+import { log } from "console";
+import { create } from "domain";
 
 const prisma = new PrismaClient();
 
@@ -259,19 +261,18 @@ const userController = {
       return res.status(400).json({ message: "Missing id field" });
     }
 
-    const user = await prisma.user
-      .findUnique({
-        where: {
-          id: Number(id),
-        },
-        include: {
-          Product: true,
-          Review: true,
-        },
-      });
+    const user = await prisma.user.findUnique({
+      where: {
+        id: Number(id),
+      },
+      include: {
+        Product: true,
+        Review: true,
+      },
+    });
 
     if (!user) {
-      return res.json({message:"User not found"}).status(400);
+      return res.json({ message: "User not found" }).status(400);
     }
 
     const { password, ...userWithoutPassword } = user;
@@ -444,6 +445,99 @@ const userController = {
       });
 
     return res.status(200).json({ message: "Order created" });
+  },
+  getOrders: async (req: Request, res: Response) => {
+    const { id } = req.body;
+
+    if (!id) {
+      return res.status(400).json({ message: "Missing id field" });
+    }
+
+    const user = await prisma.user.findUnique({
+      where: {
+        id: Number(id),
+      },
+      include: {
+        Order: true,
+      },
+    });
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    if (!user.Order) {
+      return res.status(404).json({ message: "Orders not found" });
+    }
+
+    return res.status(200).json({ order: user.Order });
+  },
+  createReview: async (req: Request, res: Response) => {
+    const { id, prodid, rating, comment } = req.body as {
+      id: string;
+      prodid: string;
+      rating: number;
+      comment: string;
+    };
+
+    if (!id) {
+      return res.status(400).json({ message: "Missing id field" });
+    }
+
+    if (!prodid) {
+      return res.status(400).json({ message: "Missing prodid field" });
+    }
+
+    if (!rating) {
+      return res.status(400).json({ message: "Missing rating field" });
+    }
+
+    if (!comment) {
+      return res.status(400).json({ message: "Missing comment field" });
+    }
+
+    const user = await prisma.user
+      .findUnique({
+        where: {
+          id: Number(id),
+        },
+      });
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    const productExists = await prisma.product
+      .findUnique({
+        where: {
+          id: Number(prodid),
+        },
+      });
+
+    if (!productExists) {
+      return res.status(404).json({ message: "Product not found" });
+    }
+
+    await prisma.review
+      .create({
+        data: {
+          user: {
+            connect: {
+              id: Number(id),
+            },
+          },
+          product: {
+            connect: {
+              id: Number(prodid),
+            },
+          },
+          rating: rating,
+          body: comment,
+          title: `Avaliação do ${user.name}`,
+        },
+      });
+
+    return res.status(204).json({ message: "Review created" });
   },
 };
 
