@@ -15,12 +15,11 @@ const HOST = process.env.HOST ?? "localhost";
 const PORT = (process.env.PORT as unknown as number) ?? 3000;
 
 export const logger = PinoHttp({
-  messageKey: "message",
   transport: {
     level: "debug",
     target: "pino-pretty",
     options: {
-      destination: 1,
+      destination: 2,
       all: true,
       translateTime: true,
     }
