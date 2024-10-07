@@ -1158,6 +1158,154 @@
           }
         }
       }
+    },
+    "/user/order": {
+      "post": {
+        "tags": [
+          "User"
+        ],
+        "description": "Endpoint para listar as compras do usuário.",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "description": "User Information",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "number",
+                  "example": 1
+                }
+              },
+              "required": [
+                "id"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Compras listadas com sucesso.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Order"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/Order"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Erro no servidor."
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "example": "any"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/user/review": {
+      "post": {
+        "tags": [
+          "User"
+        ],
+        "description": "Endpoint para realizar uma avaliação.",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "description": "Review Information",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "number",
+                  "example": 1
+                },
+                "prodid": {
+                  "type": "number",
+                  "example": 6
+                },
+                "rating": {
+                  "type": "number",
+                  "example": 5
+                },
+                "comment": {
+                  "type": "string",
+                  "example": "Muito bom!"
+                }
+              },
+              "required": [
+                "id",
+                "prodid",
+                "rating",
+                "comment"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Avaliação realizada com sucesso."
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Erro no servidor."
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "example": "any"
+                  },
+                  "prodid": {
+                    "example": "any"
+                  },
+                  "rating": {
+                    "example": "any"
+                  },
+                  "comment": {
+                    "example": "any"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
