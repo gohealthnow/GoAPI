@@ -22,10 +22,6 @@ const ProductController = {
           reviews: true,
           user: true,
         },
-      })
-      .then((product) => {
-        logger.logger.info(product);
-        return product;
       });
 
     if (productexisted.length > 0)
@@ -44,14 +40,13 @@ const ProductController = {
           reviews: true,
           user: true,
         },
-      })
-      .then((product) => {
-        return product;
-      })
-      .catch((error) => {
-        logger.logger.error(error);
-        return error;
       });
+
+      if(!newProduct) {
+        return res.status(501).json({
+          message: "Product not created!"
+        })
+      }
 
     return res
       .status(201)
@@ -85,10 +80,6 @@ const ProductController = {
       })
       .then(() => {
         return res.status(204).send();
-      })
-      .catch((error) => {
-        logger.logger.error(error);
-        return res.status(500).json({ message: { ...error } });
       });
   },
   getbyid: async (req: Request, res: Response) => {
@@ -130,10 +121,6 @@ const ProductController = {
           reviews: true,
           user: true,
         },
-      })
-      .catch((error) => {
-        logger.logger.error(error);
-        return null;
       });
 
     if (!product)
