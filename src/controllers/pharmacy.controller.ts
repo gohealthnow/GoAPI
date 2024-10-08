@@ -12,9 +12,6 @@ const pharmacyController = {
           PharmacyProduct: true,
           geolocation: true,
         },
-      })
-      .catch((error) => {
-        return res.status(404).json({ message: "Error listing pharmacy" });
       });
 
     if (!pharmacy)
@@ -31,9 +28,6 @@ const pharmacyController = {
         where: {
           id: parseInt(id),
         },
-      })
-      .catch((error) => {
-        return res.status(404).json({ message: "Error listing pharmacy" });
       });
 
     if (!pharmacy)
@@ -91,9 +85,6 @@ const pharmacyController = {
         include: {
           geolocation: true,
         },
-      })
-      .catch((error) => {
-        return res.status(409).json({ message: "Error creating pharmacy" });
       });
 
     return res.status(201).json({ pharmacy: pharmacy });
