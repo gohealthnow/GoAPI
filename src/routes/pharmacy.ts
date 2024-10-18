@@ -61,4 +61,22 @@ pharmacyRouter.post("/create", (req, res) => {
   pharmacyController.create(req, res);
 });
 
+pharmacyRouter.get("/search/:name", (req, res) => {
+    /* #swagger.tags = ['Pharmacy']
+            #swagger.path = '/pharmacy/search/{name}'
+            #swagger.description = 'Endpoint para buscar farmácias por nome.'
+            #swagger.parameters['name'] = { description: 'Pharmacy name.', required: true }
+            #swagger.responses[200] = {
+                description: 'Farmácias encontradas com sucesso.'
+            }
+            #swagger.responses[404] = {
+                description: 'Erro ao buscar farmácias.'
+            }
+            #swagger.responses[500] = {
+                description: 'Erro no servidor.'
+            }
+        */
+    pharmacyController.search(req, res);
+});
+
 export default pharmacyRouter;

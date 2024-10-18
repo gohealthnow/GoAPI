@@ -89,6 +89,28 @@ const pharmacyController = {
 
     return res.status(201).json({ pharmacy: pharmacy });
   },
+  search: async (req: Request, res: Response) => {
+    const { name } = req.params;
+
+    if (!name) return res.status(404).json({ message: "missing name field!" });
+
+    const pharmacy = await prisma.pharmacy
+      .findMany({
+        where: {
+          name: {
+            contains: name,
+            mode: "insensitive",
+          },
+        },
+        include: {
+          PharmacyProduct: true,
+        },
+      });
+
+    if (!pharmacy)
+      return res.status(404).json({ message: "No pharmacy found" });
+    return res.status(200).json({ pharmacy: pharmacy });
+  },
 };
 
 export default pharmacyController;
