@@ -138,9 +138,6 @@
           "406": {
             "description": "Not Acceptable"
           },
-          "409": {
-            "description": "Conflict"
-          },
           "500": {
             "description": "Erro no servidor."
           }
@@ -169,6 +166,36 @@
                 }
               }
             }
+          }
+        }
+      }
+    },
+    "/pharmacy/search/{name}": {
+      "get": {
+        "tags": [
+          "Pharmacy"
+        ],
+        "description": "Endpoint para buscar farmácias por nome.",
+        "parameters": [
+          {
+            "name": "name",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Pharmacy name."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Farmácias encontradas com sucesso."
+          },
+          "404": {
+            "description": "Erro ao buscar farmácias."
+          },
+          "500": {
+            "description": "Erro no servidor."
           }
         }
       }
@@ -228,6 +255,9 @@
           },
           "500": {
             "description": "Erro no servidor."
+          },
+          "501": {
+            "description": "Not Implemented"
           }
         },
         "requestBody": {
