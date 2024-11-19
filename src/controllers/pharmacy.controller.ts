@@ -31,6 +31,12 @@ const pharmacyController = {
           id: parseInt(id),
         },
         select: {
+          image: true,
+          PharmacyProduct: true,
+          phone: true,
+          name: true,
+          email: true,
+          description: true,
           geolocation: true,
         },
       });
