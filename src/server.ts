@@ -65,11 +65,6 @@ app.set("views", "./public");
 
 app.use(express.static(path.join(__dirname, "..", "public")));
 
-ngrok
-  .connect({ addr: PORT, authtoken_from_env: true })
-  .then((listener) =>
-    logger.logger.info(`Ingress established at: ${listener.url()}`)
-  );
 
 server.listen(PORT, () => {
   logger.logger.info(`Server running at http://${HOST}:${PORT}`);
@@ -81,6 +76,5 @@ server.on("error", (err) => {
   logger.logger.error("Erro no servidor:", err);
 });
 
-connect();
 
 export default app;

@@ -23,10 +23,15 @@ const pharmacyController = {
 
     if (!id) return res.status(404).json({ message: "missing id field!" });
 
+    if (isNaN(parseInt(id))) return res.status(404).json({ message: "id must be a number!" });
+
     const pharmacy = await prisma.pharmacy
       .findUnique({
         where: {
           id: parseInt(id),
+        },
+        select: {
+          geolocation: true,
         },
       });
 
