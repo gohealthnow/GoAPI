@@ -348,6 +348,71 @@ const userController = {
         return res.status(500).json({ message: error.message });
       });
   },
+  unlinkProductToUser: async (req: Request, res: Response) => {
+    const { id, prodid } = req.body as {
+      id: string;
+      prodid: string;
+    };
+
+    if (!id) {
+      return res.status(400).json({ message: "Missing id field" });
+    }
+
+    if (!prodid) {
+      return res.status(400).json({ message: "Missing prodid field" });
+    }
+
+    const user = await prisma.user
+      .findUnique({
+        where: {
+          id: Number(id),
+        },
+      })
+      .catch((error) => {
+        logger.logger.error(error.message);
+        return res.status(500).json({ message: error.message });
+      });
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    const productExists = await prisma.product
+      .findUnique({
+        where: {
+          id: Number(prodid),
+        },
+      })
+      .catch((error) => {
+        logger.logger.error(error.message);
+        return res.status(500).json({ message: error.message });
+      });
+
+    if (!productExists) {
+      return res.status(404).json({ message: "Product not found" });
+    }
+
+    await prisma.user
+      .update({
+        where: {
+          id: Number(id),
+        },
+        data: {
+          Product: {
+            disconnect: {
+              id: Number(prodid),
+            },
+          },
+        },
+      })
+      .then(() => {
+        return res.status(204).send();
+      })
+      .catch((error) => {
+        logger.logger.error(error.message);
+        return res.status(500).json({ message: error.message });
+      });
+  },
   buy: async (req: Request, res: Response) => {
     const { id, prodid, pharid, quantity } = req.body as {
       id: string;
@@ -496,46 +561,81 @@ const userController = {
       return res.status(400).json({ message: "Missing comment field" });
     }
 
-    const user = await prisma.user
-      .findUnique({
-        where: {
-          id: Number(id),
-        },
-      });
+    const user = await prisma.user.findUnique({
+      where: {
+        id: Number(id),
+      },
+    });
 
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
 
-    const productExists = await prisma.product
-      .findUnique({
-        where: {
-          id: Number(prodid),
-        },
-      });
+    const productExists = await prisma.product.findUnique({
+      where: {
+        id: Number(prodid),
+      },
+    });
 
     if (!productExists) {
       return res.status(404).json({ message: "Product not found" });
     }
 
-    await prisma.review
-      .create({
-        data: {
-          user: {
-            connect: {
-              id: Number(id),
-            },
+    // caso o usuario já tenha criado um review com o mesmo produto ele não poderá criar outro
+
+    const reviewExists = await prisma.review.findFirst({
+      where: {
+        user: {
+          every: {
+            id: Number(id),
           },
-          product: {
-            connect: {
-              id: Number(prodid),
-            },
-          },
-          rating: rating,
-          body: comment,
-          title: `Avaliação do ${user.name}`,
         },
-      });
+        product: {
+          every: {
+            id: Number(prodid),
+          },
+        },
+      },
+    });
+
+    if (reviewExists) {
+      return res.status(409).json({ message: "Review already exists" });
+    }
+
+    // caso o usuario não tenha comprado o produto ele não pode avaliar
+
+    const orderExists = await prisma.order.findFirst({
+      where: {
+        user: {
+          id: Number(id),
+        },
+        product: {
+          id: Number(prodid),
+        },
+      },
+    });
+
+    if (!orderExists) {
+      return res.status(409).json({ message: "User didn't buy this product" });
+    }
+
+    await prisma.review.create({
+      data: {
+        user: {
+          connect: {
+            id: Number(id),
+          },
+        },
+        product: {
+          connect: {
+            id: Number(prodid),
+          },
+        },
+        rating: rating,
+        body: comment,
+        title: `Avaliação do ${user.name}`,
+      },
+    });
 
     return res.status(204).json({ message: "Review created" });
   },
