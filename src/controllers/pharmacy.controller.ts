@@ -31,6 +31,8 @@ const pharmacyController = {
           id: parseInt(id),
         },
         select: {
+          id: true,
+          createdAt: true,
           image: true,
           PharmacyProduct: true,
           phone: true,
