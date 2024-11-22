@@ -188,6 +188,29 @@ userRouter.post("/product", async (req, res) => {
   userController.linkProductToUser(req, res);
 });
 
+userRouter.post("/product/unlink", async (req, res) => {
+  /* #swagger.tags = ['User']
+      #swagger.path = '/user/product/unlink'
+      #swagger.description = 'Endpoint para desvincular um produto do usuário.'
+      #swagger.parameters['body'] = {
+        in: 'body',
+        description: 'Update Information',
+        required: true,
+        schema: {
+            $id: 1,
+            $prodid: 6,
+          },
+      }
+      #swagger.responses[204] = {
+        description: 'Produto desvinculado do usuário com sucesso.'
+      }
+      #swagger.responses[500] = {
+        description: 'Erro no servidor.'
+      }
+  */
+  userController.unlinkProductToUser(req, res);
+})
+
 userRouter.post("/product/buy", async (req, res) => {
   /* #swagger.tags = ['User']
       #swagger.path = '/user/product/buy'
