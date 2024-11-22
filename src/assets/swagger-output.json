@@ -1111,6 +1111,70 @@
         }
       }
     },
+    "/user/product/unlink": {
+      "post": {
+        "tags": [
+          "User"
+        ],
+        "description": "Endpoint para desvincular um produto do usuário.",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "description": "Update Information",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "number",
+                  "example": 1
+                },
+                "prodid": {
+                  "type": "number",
+                  "example": 6
+                }
+              },
+              "required": [
+                "id",
+                "prodid"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Produto desvinculado do usuário com sucesso."
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Erro no servidor."
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "example": "any"
+                  },
+                  "prodid": {
+                    "example": "any"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/user/product/buy": {
       "post": {
         "tags": [
@@ -1307,6 +1371,9 @@
           },
           "404": {
             "description": "Not Found"
+          },
+          "409": {
+            "description": "Conflict"
           },
           "500": {
             "description": "Erro no servidor."
