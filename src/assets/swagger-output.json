@@ -23,6 +23,257 @@
     }
   ],
   "paths": {
+    "/category/": {
+      "get": {
+        "tags": [
+          "Category"
+        ],
+        "description": "Endpoint para listar todas as categorias.",
+        "responses": {
+          "200": {
+            "description": "Categorias listadas com sucesso."
+          },
+          "404": {
+            "description": "Nenhuma categoria encontrada."
+          },
+          "500": {
+            "description": "Erro no servidor."
+          }
+        }
+      }
+    },
+    "/category/{id}": {
+      "get": {
+        "tags": [
+          "Category"
+        ],
+        "description": "Endpoint para obter uma categoria.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Categoria obtida com sucesso."
+          },
+          "404": {
+            "description": "Categoria não encontrada."
+          },
+          "500": {
+            "description": "Erro no servidor."
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Category"
+        ],
+        "description": "Endpoint para deletar uma categoria.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Categoria deletada com sucesso."
+          },
+          "404": {
+            "description": "Erro ao deletar categoria."
+          },
+          "500": {
+            "description": "Erro no servidor."
+          }
+        }
+      }
+    },
+    "/category/create": {
+      "post": {
+        "tags": [
+          "Category"
+        ],
+        "description": "Endpoint para criar uma categoria.",
+        "parameters": [
+          {
+            "name": "Category",
+            "in": "body",
+            "description": "Category information.",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "example": "Category Name"
+                }
+              },
+              "required": [
+                "name"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Categoria criada com sucesso."
+          },
+          "404": {
+            "description": "Erro ao criar categoria."
+          },
+          "409": {
+            "description": "Conflict"
+          },
+          "500": {
+            "description": "Erro no servidor."
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "example": "any"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/category/update/{id}": {
+      "put": {
+        "tags": [
+          "Category"
+        ],
+        "description": "Endpoint para atualizar uma categoria.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Category",
+            "in": "body",
+            "description": "Category information.",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "example": "Category Name"
+                }
+              },
+              "required": [
+                "name"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Categoria atualizada com sucesso."
+          },
+          "404": {
+            "description": "Erro ao atualizar categoria."
+          },
+          "500": {
+            "description": "Erro no servidor."
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "example": "any"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/category/product": {
+      "post": {
+        "tags": [
+          "Category"
+        ],
+        "description": "Endpoint para linkar um produto a uma categoria.",
+        "parameters": [
+          {
+            "name": "Category",
+            "in": "body",
+            "description": "Category information.",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "prodid": {
+                  "type": "number",
+                  "example": 6
+                }
+              },
+              "required": [
+                "prodid"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "204": {
+            "description": "Produto linkado a categoria com sucesso."
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "404": {
+            "description": "Erro ao linkar produto a categoria."
+          },
+          "500": {
+            "description": "Erro no servidor."
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "prodid": {
+                    "example": "any"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/pharmacy/{id}": {
       "get": {
         "tags": [
@@ -601,6 +852,22 @@
           "Server"
         ],
         "description": "Endpoint para testar a conexão com o servidor.",
+        "responses": {
+          "200": {
+            "description": "Servidor conectado."
+          },
+          "500": {
+            "description": "Erro no servidor."
+          }
+        }
+      }
+    },
+    "/server/remedio": {
+      "get": {
+        "tags": [
+          "Server"
+        ],
+        "description": "Endpoint para deixar todos os produtos com a categoria \"remedio\".",
         "responses": {
           "200": {
             "description": "Servidor conectado."
