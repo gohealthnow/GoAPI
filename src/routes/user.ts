@@ -285,6 +285,33 @@ userRouter.post("/review", async (req, res) => {
   userController.createReview(req, res);
 })
 
+userRouter.post("/forget", async (req, res) => {
+  /* #swagger.tags = ['User']
+      #swagger.path = '/user/forget'
+      #swagger.description = 'Endpoint para recuperar senha.'
+      #swagger.parameters['body'] = {
+        in: 'body',
+        description: 'User Information',
+        required: true,
+        schema: {
+            $email: '',
+          },
+      }
+      #swagger.responses[200] = {
+        description: 'Email enviado com sucesso.'
+      }
+
+      #swagger.responses[404] = {
+        description: 'Email não encontrado.'
+      }
+
+      #swagger.responses[500] = {
+        description: 'Erro no servidor.'
+      }
+  */
+  userController.forgetPassword(req, res);
+});
+
 export default userRouter;
 
 // Produtos para add: Alpazolan, Oxicodona, Dipirona

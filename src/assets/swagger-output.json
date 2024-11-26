@@ -862,22 +862,6 @@
         }
       }
     },
-    "/server/remedio": {
-      "get": {
-        "tags": [
-          "Server"
-        ],
-        "description": "Endpoint para deixar todos os produtos com a categoria \"remedio\".",
-        "responses": {
-          "200": {
-            "description": "Servidor conectado."
-          },
-          "500": {
-            "description": "Erro no servidor."
-          }
-        }
-      }
-    },
     "/stock/{pharmacy}/{product}": {
       "get": {
         "tags": [
@@ -1662,6 +1646,62 @@
                     "example": "any"
                   },
                   "comment": {
+                    "example": "any"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/user/forget": {
+      "post": {
+        "tags": [
+          "User"
+        ],
+        "description": "Endpoint para recuperar senha.",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "description": "User Information",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "email": {
+                  "type": "string",
+                  "example": ""
+                }
+              },
+              "required": [
+                "email"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Email enviado com sucesso."
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "404": {
+            "description": "Email não encontrado."
+          },
+          "500": {
+            "description": "Erro no servidor."
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": {
                     "example": "any"
                   }
                 }

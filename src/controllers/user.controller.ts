@@ -5,6 +5,8 @@ import { ADMIN_SECRET, JWT_SECRET, logger } from "../server";
 import { regExpEmail } from "../middlewares/checkin";
 import { log } from "console";
 import { create } from "domain";
+import { generateToken } from "../utils/jwt";
+import { generatePassowrdRandom, sendEmail } from "../utils/email";
 
 const prisma = new PrismaClient();
 
@@ -638,6 +640,36 @@ const userController = {
     });
 
     return res.status(204).json({ message: "Review created" });
+  },
+  forgetPassword: async (req: Request, res: Response) => {
+    const { email } = req.body as { email: string };
+
+    if (!email) {
+      return res.status(400).json({ message: "Missing email field" });
+    }
+
+    const user = await prisma.user.findUnique({
+      where: {
+        email: email,
+      },
+    });
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    const userPassword = generatePassowrdRandom(user.name);
+
+    await prisma.user.update({
+      where: {
+        email: email,
+      },
+      data: {
+        password: userPassword,
+      },
+    });
+
+    return res.status(200).json({ message: "Email sent", pass: userPassword });
   },
 };
 
