@@ -1,3 +1,4 @@
+import CategoryRouter from "./routes/category";
 import pharmacyRouter from "./routes/pharmacy";
 import productRouter from "./routes/product";
 import serverRouter from "./routes/server";
@@ -14,3 +15,5 @@ app.use("/server", serverRouter);
 app.use("/pharmacy", pharmacyRouter);
 
 app.use("/stock", stockRouter);
+
+app.use("/category", CategoryRouter);
