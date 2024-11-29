@@ -6,13 +6,12 @@ const prisma = new PrismaClient();
 
 const pharmacyController = {
   listall: async (req: Request, res: Response) => {
-    const pharmacy = await prisma.pharmacy
-      .findMany({
-        include: {
-          PharmacyProduct: true,
-          geolocation: true,
-        },
-      });
+    const pharmacy = await prisma.pharmacy.findMany({
+      include: {
+        PharmacyProduct: true,
+        geolocation: true,
+      },
+    });
 
     if (!pharmacy)
       return res.status(404).json({ message: "No pharmacy found" });
@@ -23,25 +22,25 @@ const pharmacyController = {
 
     if (!id) return res.status(404).json({ message: "missing id field!" });
 
-    if (isNaN(parseInt(id))) return res.status(404).json({ message: "id must be a number!" });
+    if (isNaN(parseInt(id)))
+      return res.status(404).json({ message: "id must be a number!" });
 
-    const pharmacy = await prisma.pharmacy
-      .findUnique({
-        where: {
-          id: parseInt(id),
-        },
-        select: {
-          id: true,
-          createdAt: true,
-          image: true,
-          PharmacyProduct: true,
-          phone: true,
-          name: true,
-          email: true,
-          description: true,
-          geolocation: true,
-        },
-      });
+    const pharmacy = await prisma.pharmacy.findUnique({
+      where: {
+        id: parseInt(id),
+      },
+      select: {
+        id: true,
+        createdAt: true,
+        image: true,
+        PharmacyProduct: true,
+        phone: true,
+        name: true,
+        email: true,
+        description: true,
+        geolocation: true,
+      },
+    });
 
     if (!pharmacy)
       return res.status(404).json({ message: "No pharmacy found" });
@@ -70,35 +69,32 @@ const pharmacyController = {
     if (!phone || ![10, 11].includes(phone.length))
       return res.status(404).json({ message: "missing phone field!" });
 
-    const fetchedZipCodeDetails = await consultarCep(
-      customerPostalCode
-    );
+    const fetchedZipCodeDetails = await consultarCep(customerPostalCode);
 
     if (!fetchedZipCodeDetails)
       return res.status(406).json({ message: "No cep found" });
 
-    const pharmacy = await prisma.pharmacy
-      .create({
-        data: {
-          name: name,
-          email: email,
-          image: imageurl ?? "https://via.placeholder.com/150",
-          phone: phone,
-          geolocation: {
-            create: {
-              address: `${fetchedZipCodeDetails.logradouro}, ${fetchedZipCodeDetails.bairro}`,
-              cep: fetchedZipCodeDetails.cep,
-              city: fetchedZipCodeDetails.localidade,
-              additional: fetchedZipCodeDetails.complemento,
-              latitude: 0.0,
-              longitude: 0.0,
-            },
+    const pharmacy = await prisma.pharmacy.create({
+      data: {
+        name: name,
+        email: email,
+        image: imageurl ?? "https://via.placeholder.com/150",
+        phone: phone,
+        geolocation: {
+          create: {
+            address: `${fetchedZipCodeDetails.logradouro}, ${fetchedZipCodeDetails.bairro}`,
+            cep: fetchedZipCodeDetails.cep,
+            city: fetchedZipCodeDetails.localidade,
+            additional: fetchedZipCodeDetails.complemento,
+            latitude: 0.0,
+            longitude: 0.0,
           },
         },
-        include: {
-          geolocation: true,
-        },
-      });
+      },
+      include: {
+        geolocation: true,
+      },
+    });
 
     return res.status(201).json({ pharmacy: pharmacy });
   },
@@ -107,22 +103,53 @@ const pharmacyController = {
 
     if (!name) return res.status(404).json({ message: "missing name field!" });
 
-    const pharmacy = await prisma.pharmacy
-      .findMany({
-        where: {
-          name: {
-            contains: name,
-            mode: "insensitive",
-          },
+    const pharmacy = await prisma.pharmacy.findMany({
+      where: {
+        name: {
+          contains: name,
+          mode: "insensitive",
         },
-        include: {
-          PharmacyProduct: true,
-        },
-      });
+      },
+      include: {
+        PharmacyProduct: true,
+      },
+    });
 
     if (!pharmacy)
       return res.status(404).json({ message: "No pharmacy found" });
     return res.status(200).json({ pharmacy: pharmacy });
+  },
+  getAllOrdersById: async (req: Request, res: Response) => {
+    const { id } = req.params;
+
+    if (!id) return res.status(404).json({ message: "missing id field!" });
+
+    if (isNaN(parseInt(id)))
+      return res.status(404).json({ message: "id must be a number!" });
+
+    const pharmacyProduct = await prisma.pharmacyProduct.findMany({
+      where: {
+        pharmacyId: parseInt(id),
+      },
+    });
+
+    if (!pharmacyProduct)
+      return res.status(404).json({ message: "No pharmacy found" });
+
+    const order = await prisma.product.findMany({
+      where: {
+        id: {
+          in: pharmacyProduct.map((item) => item.productId),
+        },
+      },
+      select: {
+        Order: true,
+      },
+    });
+
+    if (!order) return res.status(404).json({ message: "No product found" });
+
+    return res.status(200).json({ order: order });
   },
 };
 

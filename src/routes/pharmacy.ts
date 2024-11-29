@@ -79,4 +79,22 @@ pharmacyRouter.get("/search/:name", (req, res) => {
     pharmacyController.search(req, res);
 });
 
+pharmacyRouter.get("/order/:id", (req, res) => {
+  /* #swagger.tags = ['Pharmacy']
+            #swagger.path = '/pharmacy/order/{id}'
+            #swagger.description = 'Endpoint para listar pedidos de uma farmácia.'
+            #swagger.parameters['id'] = { description: 'Pharmacy identification.', required: true }
+            #swagger.responses[200] = {
+                description: 'Pedidos listados com sucesso.'
+            }
+            #swagger.responses[404] = {
+                description: 'Erro ao listar pedidos.'
+            }
+            #swagger.responses[500] = {
+                description: 'Erro no servidor.'
+            }
+        */
+  pharmacyController.getAllOrdersById(req, res);
+});
+
 export default pharmacyRouter;
