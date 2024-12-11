@@ -238,63 +238,31 @@ const ProductController = {
     return res.status(200).json({ products: pharmacytoProduct });
   },
   updateStock: async (req: Request, res: Response) => {
-    const { productId, pharmacyId } = req.params as {
-      productId: string;
-      pharmacyId: string;
-    };
-    console.log(req.body, req.params);
-    
-    const { quantity } = req.body as { quantity: number };
+    const { pharmacyId, productId, quantity } = req.body;
 
-    if (!productId)
-      return res.status(404).json({ message: "missing product field!" });
-    if (!pharmacyId)
-      return res.status(404).json({ message: "missing pharmacy field!" });
-    if (!quantity)
-      return res.status(404).json({ message: "missing quantity field!" });
-
-    if (quantity < 0)
-      return res
-        .status(404)
-        .json({ message: "Quantity must be greater than 0" });
-
-    const productexisted = await prisma.product.findUnique({
-      where: {
-        id: Number(productId),
-      },
-    });
-
-    if (!productexisted)
-      return res.status(404).json({ message: "Product not found" });
-
-    const pharmacyexisted = await prisma.pharmacy.findUnique({
-      where: {
-        id: Number(pharmacyId),
-      },
-    });
-
-    if (!pharmacyexisted)
-      return res.status(404).json({ message: "Pharmacy not found" });
-
-    const pharmacyProduct = await prisma.pharmacyProduct.findFirst({
-      where: {
-        pharmacyId: Number(pharmacyId),
-        productId: Number(productId),
-      },
-    });
-
-    if (!pharmacyProduct) {
-      await prisma.pharmacyProduct.create({
-        data: {
-          pharmacyId: Number(pharmacyId),
-          productId: Number(productId),
-          quantity: quantity,
+    try {
+      const pharmacyProduct = await prisma.pharmacyProduct.findUnique({
+        where: {
+          pharmacyId_productId: {
+            pharmacyId: Number(pharmacyId),
+            productId: Number(productId),
+          },
         },
       });
-      return res.status(200).json({ message: "Stock updated" });
-    }
 
-    if (pharmacyProduct) {
+      if (!pharmacyProduct) {
+        // Create new record if doesn't exist
+        await prisma.pharmacyProduct.create({
+          data: {
+            pharmacyId: Number(pharmacyId),
+            productId: Number(productId),
+            quantity: quantity,
+          },
+        });
+        return res.status(200).json({ message: "Stock created" });
+      }
+
+      // Update existing record
       await prisma.pharmacyProduct.update({
         where: {
           pharmacyId_productId: {
@@ -307,6 +275,13 @@ const ProductController = {
         },
       });
       return res.status(200).json({ message: "Stock updated" });
+
+    } catch (error) {
+      console.error('Error updating stock:', error);
+      return res.status(500).json({ 
+        error: "Failed to update stock",
+        details: error instanceof Error ? error.message : 'Unknown error'
+      });
     }
   },
 };
