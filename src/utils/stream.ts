@@ -52,6 +52,7 @@ process.on("exit", () => {
 export async function connect () {
   await pgClient.connect()
   await pgClient.listenTo("quantity_change")
+  await sendSampleMessage()
 }
 
 export async function sendSampleMessage () {
