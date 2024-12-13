@@ -264,8 +264,8 @@ const ProductController = {
       await prisma.pharmacyProduct.update({
         where: {
           pharmacyId_productId: {
-            pharmacyId: Number(pharmacyId),
-            productId: Number(productId),
+            pharmacyId: pharmacyProduct[0].pharmacyId,
+            productId: pharmacyProduct[0].productId,
           },
         },
         data: {
