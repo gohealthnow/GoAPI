@@ -241,12 +241,10 @@ const ProductController = {
     const { pharmacyId, productId, quantity } = req.body;
 
     try {
-      const pharmacyProduct = await prisma.pharmacyProduct.findUnique({
+      const pharmacyProduct = await prisma.pharmacyProduct.findMany({
         where: {
-          pharmacyId_productId: {
-            pharmacyId: Number(pharmacyId),
-            productId: Number(productId),
-          },
+          pharmacyId: pharmacyId,
+          productId: productId,
         },
       });
 
